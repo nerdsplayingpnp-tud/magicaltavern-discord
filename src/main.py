@@ -14,7 +14,12 @@ async def hello_world(ctx: commands.Context):
     await ctx.send("Hello, world :)")
     # For all intents and purposes, ctx.send() and ctx.channel.send() function exactly the same, with the first option simply being more concise.
 
-with open('./config/token.txt') as token_file:
-    __token__ = token_file.read()
-    print(__token__)
-    bot.run(__token__)
+try:
+    with open('./config/token.txt') as token_file:
+        __token__ = token_file.read()
+        bot.run(__token__)
+except FileNotFoundError:
+    print("Please enter your Bot Token. It will be stored in './config/token.txt', which is ignored by .gitignore.")
+    __tokenfile__ = open('./config/token.txt', 'x')
+    __tokenfile__.write(input())
+    print("Token stored. You can now restart the bot.")
