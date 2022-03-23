@@ -1,5 +1,3 @@
-from operator import truediv
-from traceback import format_exception
 import discord
 from discord.ext import commands
 from logger.ownlogger import log
