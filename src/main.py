@@ -4,8 +4,9 @@ from discord.ext import commands
 
 bot = commands.Bot(command_prefix="mt!")
 
-
 # Decorator, that converts below defined function into a "discord"-Command
+
+
 @bot.command(name="hello")
 # Setting the name-Attr is optional, as per default, the command will inherit its' name from the function name, if no name has been defined.
 # Defines function that takes ctx-Argument, which is a Context object, passed with EVERY command.
