@@ -455,6 +455,3 @@ cython_debug/
 #.idea/
 
 # End of https://www.toptal.com/developers/gitignore/api/python,pycharm,pycharm+all,pycharm+iml,intellij
-
-# Don't expose the token lol
-token.json
