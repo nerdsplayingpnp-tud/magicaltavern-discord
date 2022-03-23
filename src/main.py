@@ -1,5 +1,6 @@
 from unicodedata import name
 from discord.ext import commands
+from logger.ownlogger import log
 
 bot = commands.Bot(command_prefix="mt!")
 
@@ -19,7 +20,10 @@ try:
         __token__ = token_file.read()
         bot.run(__token__)
 except FileNotFoundError:
-    print("Please enter your Bot Token. It will be stored in './config/token.txt', which is ignored by .gitignore.")
-    __tokenfile__ = open('./config/token.txt', 'x')
-    __tokenfile__.write(input())
-    print("Token stored. You can now restart the bot.")
+
+    log("Please enter your Bot Token. It will be stored in './config/token.txt', which is ignored by .gitignore.", 'red')
+    token = input()
+    print(token)
+    tokenfile = open('./config/token.txt', 'w')
+    tokenfile.write(token)
+    log("Token stored. You can now restart the bot.")
