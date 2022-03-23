@@ -19,19 +19,28 @@ class UtilityCommands(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
+    # check_admin is a decorator that returns as True, if the Context User is either the bot owner, has the admin_role configured in
+    # config.json, or simply has administrator permissions.
+
     def check_admin():
         def predicate(ctx):
             return(commands.check_any(commands.has_role(id_role_admin), commands.has_permissions(administrator=True), commands.is_owner()))
         return commands.check(predicate)
 
+    # Simple ping-command to check if the bot is still alive.
+
     @commands.command(name='latency')
     async def ping(self, ctx: commands.Context):
         await ctx.send(f"Latenz: {round(self.bot.latency * 1000)}ms")
+
+    # Manipulate the displayed Discord-Activity with this command.
 
     @commands.command(name='setstatus')
     @commands.check_any(commands.has_role(id_role_admin), commands.has_permissions(administrator=True))
     async def setstatus(self, ctx: commands.Context, *, text: str):
         await self.bot.change_presence(activity=discord.Game(name=text))
+
+    # Easy way to test new decorators, functions or anything else :)
 
     @commands.command(name='debug')
     @check_admin()
