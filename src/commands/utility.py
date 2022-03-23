@@ -21,7 +21,7 @@ class UtilityCommands(commands.Cog):
 
     def check_admin():
         def predicate(ctx):
-            return(commands.is_owner())
+            return(commands.check_any(commands.has_role(id_role_admin), commands.has_permissions(administrator=True), commands.is_owner()))
         return commands.check(predicate)
 
     @ commands.command(name='latency')
