@@ -23,7 +23,7 @@ except FileNotFoundError:
 
     log("Please enter your Bot Token. It will be stored in './config/token.txt', which is ignored by .gitignore.", 'red')
     token = input()
-    print(token)
     tokenfile = open('./config/token.txt', 'w')
     tokenfile.write(token)
+    tokenfile.close()
     log("Token stored. You can now restart the bot.")
