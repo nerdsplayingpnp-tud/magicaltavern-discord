@@ -1,6 +1,7 @@
 from discord.ext import commands
 from logger.ownlogger import log
 
+
 bot = commands.Bot(command_prefix="mt!")  # Create a Bot with Prefix 'mt!'
 
 # If a file token.txt exists: Run the bot. If not: Ask for the token to be stored in the file, and create the file.
@@ -9,7 +10,7 @@ try:
         __token__ = token_file.read()
 
         # Load all the cogs
-        bot.load_extension("utility")
+        bot.load_extension("commands.utility")
 
         bot.run(__token__)
 except FileNotFoundError:
