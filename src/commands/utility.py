@@ -24,17 +24,17 @@ class UtilityCommands(commands.Cog):
             return(commands.check_any(commands.has_role(id_role_admin), commands.has_permissions(administrator=True), commands.is_owner()))
         return commands.check(predicate)
 
-    @ commands.command(name='latency')
+    @commands.command(name='latency')
     async def ping(self, ctx: commands.Context):
         await ctx.send(f"Latenz: {round(self.bot.latency * 1000)}ms")
 
-    @ commands.command(name='setstatus')
-    @ commands.check_any(commands.has_role(id_role_admin), commands.has_permissions(administrator=True))
+    @commands.command(name='setstatus')
+    @commands.check_any(commands.has_role(id_role_admin), commands.has_permissions(administrator=True))
     async def setstatus(self, ctx: commands.Context, *, text: str):
         await self.bot.change_presence(activity=discord.Game(name=text))
 
-    @ commands.command(name='debug')
-    @ check_admin()
+    @commands.command(name='debug')
+    @check_admin()
     async def debug(self, ctx: commands.Context):
         # This is how we get IDs from the Context: ctx.message.author.roles[1].id
         print('success')
