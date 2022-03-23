@@ -1,5 +1,4 @@
 from unicodedata import name
-import json
 from discord.ext import commands
 
 bot = commands.Bot(command_prefix="mt!")
@@ -14,6 +13,8 @@ async def hello_world(ctx: commands.Context):
     # Makes an API Call to Discord to send a mesage to the channel the command was run in with the message content.
     await ctx.send("Hello, world :)")
     # For all intents and purposes, ctx.send() and ctx.channel.send() function exactly the same, with the first option simply being more concise.
-    with open('/config/token.json') as token_file:
-        __token__ = json.load(token_file)
-        bot.run(__token__)
+
+with open('./config/token.txt') as token_file:
+    __token__ = token_file.read()
+    print(__token__)
+    bot.run(__token__)
