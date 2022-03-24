@@ -34,8 +34,8 @@ except FileNotFoundError:
     # Getting the input as a variable BEFORE creating the file means,
     # that the created file cannot be empty if the program aborts at this point.
     token = input()
-    tokenfile = open(from_project_root(
-        '/config/token.txt'), 'w', encoding='utf-8')
-    tokenfile.write(token)
-    tokenfile.close()
+    with open(from_project_root(
+            '/config/token.txt'), 'w', encoding='utf-8') as tokenfile:
+        tokenfile.write(token)
+        tokenfile.close()
     log("Token stored. Please restart the bot.")

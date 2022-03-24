@@ -18,7 +18,7 @@ def get_project_root():
 
 
 def from_project_root(path: str) -> str:
-    """from_project_root(path) is supposed to be a simple way to navigate directories relative to 
+    """from_project_root(path) is supposed to be a simple way to navigate directories relative to
     the project root. Example: If your project root is '/home/user/this-project', calling
     'from_project_root('/config/token.txt')' returns '/home/user/this-project/config/token.txt'.
 
@@ -40,7 +40,7 @@ def config_var(json_key: str):
         json_key (str): the key which you want to retrieve the value from.
 
     Returns:
-        any type: the value 
+        any type: the value
     """
     with open(from_project_root('/config/config.json'), encoding='utf-8') as conf:
         __conf_dict__ = json.load(conf)

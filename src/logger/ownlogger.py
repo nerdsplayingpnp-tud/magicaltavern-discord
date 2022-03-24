@@ -8,7 +8,7 @@ def log(message: str, color: str = 'default'):
 
     Args:
         message (str): The message you want to log.
-        color (str, optional): The color 
+        color (str, optional): The color
         you want the message to be displayed in. Defaults to 'default', which is a blue-ish color.
     """
     if color == 'default':

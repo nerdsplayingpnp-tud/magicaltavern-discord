@@ -1,3 +1,5 @@
+# pylint: disable=R0201
+
 """
 IMPORTS:
 os
@@ -52,7 +54,7 @@ class UtilityCommands(commands.Cog):
 
     def check_admin(self=None):
         """"check_admin() gets used as a predicate to check for all the possible conditions that
-        would make a user an 'admin'-type user. The predicate returns True, if the Context User 
+        would make a user an 'admin'-type user. The predicate returns True, if the Context User
         is either the bot owner, has the admin_role configured in
         config.json, or simply has administrator permissions.
         """
