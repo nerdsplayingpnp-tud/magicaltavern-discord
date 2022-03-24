@@ -1,9 +1,10 @@
 from discord.ext import commands
+import discord
 from logger.ownlogger import log
 from utils import from_project_root
 
 
-bot = commands.Bot(command_prefix="mt!")  # Create a Bot with Prefix 'mt!'
+bot = discord.Bot()  # Create a Bot with Prefix 'mt!'
 
 # If a file token.txt exists: Run the bot. If not: Ask for the token to be stored in the file, and create the file.
 try:
