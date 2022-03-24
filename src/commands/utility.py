@@ -50,9 +50,6 @@ class UtilityCommands(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    # check_admin is a decorator that returns as True, if the Context User is either the bot owner, has the admin_role configured in
-    # config.json, or simply has administrator permissions.
-
     def check_admin(self=None):
         """"check_admin() gets used as a predicate to check for all the possible conditions that
         would make a user an 'admin'-type user. The predicate returns True, if the Context User 
