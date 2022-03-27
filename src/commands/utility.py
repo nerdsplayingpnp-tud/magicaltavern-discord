@@ -52,7 +52,8 @@ class UtilityCommands(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    def check_admin(self=None):
+    def check_admin(self=None):  # Self gets passed because pylint wants it. i'm probably doing
+        # this wrong, but it cannot be that stupid if it works!
         """"check_admin() gets used as a predicate to check for all the possible conditions that
         would make a user an 'admin'-type user. The predicate returns True, if the Context User
         is either the bot owner, has the admin_role configured in
