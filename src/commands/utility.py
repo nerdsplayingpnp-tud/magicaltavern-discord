@@ -29,7 +29,7 @@ from discord.commands import (
 )
 import discord
 from discord.ext import commands
-from utils import get_project_root, from_project_root, config_var
+from helper_functions import get_project_root, from_project_root, config_var
 
 
 roles_path = os.path.join(get_project_root(), "/config/roles.json")
@@ -73,13 +73,13 @@ class UtilityCommands(commands.Cog):
     @slash_command(
         name='ping',
         guild_ids=list_guilds)
-    async def ping(self, ctx: commands.Context):
+    async def ping(self, interaction: discord.Interaction):
         """Simple ping-command to check if the bot is still alive.
 
         Args:
             ctx (commands.Context): The pycord-context object (passed automatically)
         """
-        await ctx.respond(f"Latenz: {round(self.bot.latency * 1000)}ms")
+        await interaction.response.send_message(f"Latenz: {round(self.bot.latency * 1000)}ms", ephemeral=True)
 
     @slash_command(
         name='setstatus',
