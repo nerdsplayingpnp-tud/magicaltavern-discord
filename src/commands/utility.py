@@ -79,7 +79,8 @@ class UtilityCommands(commands.Cog):
         Args:
             ctx (commands.Context): The pycord-context object (passed automatically)
         """
-        await interaction.response.send_message(f"Latenz: {round(self.bot.latency * 1000)}ms", ephemeral=True)
+        await interaction.response.send_message(f"Latenz: {round(self.bot.latency * 1000)}ms",
+                                                ephemeral=True)
 
     @slash_command(
         name='setstatus',
