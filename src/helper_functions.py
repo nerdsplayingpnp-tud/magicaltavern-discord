@@ -55,7 +55,7 @@ def roles_var(json_key: str) -> int:
         json_key (str): the key which you want to retrieve the value from.
 
     Returns:
-        int: the role id
+        int: the id
     """
     with open(from_project_root('/config/roles.json'), encoding='utf-8') as role:
         __role_dict__ = json.load(role)

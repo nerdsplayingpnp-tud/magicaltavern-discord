@@ -30,6 +30,7 @@ from discord.commands import (
 import discord
 from discord.ext import commands
 from helper_functions import get_project_root, from_project_root, config_var
+from ensure_perms import check_admin
 
 
 roles_path = os.path.join(get_project_root(), "/config/roles.json")
@@ -52,24 +53,6 @@ class UtilityCommands(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    def check_admin(self=None):  # Self gets passed because pylint wants it. i'm probably doing
-        # this wrong, but it cannot be that stupid if it works!
-        """"check_admin() gets used as a predicate to check for all the possible conditions that
-        would make a user an 'admin'-type user. The predicate returns True, if the Context User
-        is either the bot owner, has the admin_role configured in
-        config.json, or simply has administrator permissions.
-        """
-        def predicate(ctx):
-            # ctx NEEDS to be passed to this predicate, because pycord demands it. The following
-            # 2 lines are dedicated to remove a pylint warning.
-            use_ctx = ctx
-            ctx = use_ctx  # i hate this.
-            return(commands.check_any(commands.has_role(id_role_admin),
-                                      commands.has_permissions(
-                                          administrator=True),
-                                      commands.is_owner()))
-        return commands.check(predicate)
-
     @slash_command(
         name='ping',
         guild_ids=list_guilds)
@@ -86,7 +69,7 @@ class UtilityCommands(commands.Cog):
         name='setstatus',
         guild_ids=list_guilds
     )
-    @check_admin()
+    @check_admin(commands.Context)
     async def setstatus(self, ctx: commands.Context, *, text: str):
         """Manipulate the displayed Discord-Activity with this command.
 
@@ -103,7 +86,7 @@ class UtilityCommands(commands.Cog):
         name='debug',
         guild_ids=list_guilds
     )
-    @check_admin()
+    @check_admin(commands.Context)
     async def debug(self, ctx: commands.Context):
         """A debug function that can be used for anything
 

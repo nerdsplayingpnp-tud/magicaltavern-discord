@@ -24,7 +24,6 @@ utils
     """
 import os
 import json
-
 import discord
 from discord.ext import commands
 from helper_functions import get_project_root, from_project_root, config_var
