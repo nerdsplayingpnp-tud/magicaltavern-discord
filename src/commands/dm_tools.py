@@ -27,7 +27,10 @@ import json
 
 import discord
 from discord.ext import commands
-from helper_functions import get_project_root, from_project_root, config_var
+from discord.commands import (
+    slash_command,
+)
+from helper_functions import get_project_root, from_project_root, config_var, roles_var
 
 roles_path = os.path.join(get_project_root(), "/config/roles.json")
 with open(from_project_root('/config/roles.json'), encoding='utf-8') as roles_json:
@@ -80,6 +83,20 @@ class DungeonMasterTools(commands.Cog):
     # next person from the queue gets notified and asked if they'd still like to join the campaign.
     # 6: When the campaign is eventually over, the DM can close the channels. All Roles and channels
     # get archived/deleted.
+
+    @slash_command(
+        name='suggest-campaign',
+        guild_ids=list_guilds
+    )
+    @commands.has_role(roles_var('role-dm'))
+    async def callback(self, interaction: discord.Interaction):
+        await interaction.response.send_message("Success", ephemeral=True)
+
+    # TODO: Handle "User doesn't have this role"-Errors!
+    # @callback.error
+    # async def callback_error(error, interaction: discord.Interaction):
+    #    if isinstance(error, commands.MissingPermissions):
+    #        interaction.response.send_message("Failure", ephemeral=True)
 
 
 def setup(bot: discord.Bot):
