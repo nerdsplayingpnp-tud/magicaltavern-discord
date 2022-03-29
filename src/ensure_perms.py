@@ -1,3 +1,4 @@
+from itertools import Predicate
 import discord
 from discord.ext import commands
 from helper_functions import roles_var
@@ -30,3 +31,8 @@ def check_dungeonmaster(ctx: commands.Context, self=None):
     is equipped with the dungeon_master-role defined in roles.json. 
     The predicate returns True, if the Context User has the dungeon_master-role defined in
     roles.json"""
+    def predicate(ctx):
+        use_ctx = ctx
+        ctx = use_ctx  # i hate this.
+        return(commands.check_any(commands.has_role(roles_var('role-dm'))))
+    return commands.check(predicate)

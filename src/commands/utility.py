@@ -30,7 +30,7 @@ from discord.commands import (
 import discord
 from discord.ext import commands
 from helper_functions import get_project_root, from_project_root, config_var
-from ensure_perms import check_admin
+from ensure_perms import check_admin, check_dungeonmaster
 
 
 roles_path = os.path.join(get_project_root(), "/config/roles.json")
@@ -86,8 +86,8 @@ class UtilityCommands(commands.Cog):
         name='debug',
         guild_ids=list_guilds
     )
-    @check_admin(commands.Context)
-    async def debug(self, ctx: commands.Context):
+    @check_dungeonmaster(commands.Context)
+    async def debug(self, interaction: discord.Interaction):
         """A debug function that can be used for anything
 
         Args:
@@ -96,7 +96,7 @@ class UtilityCommands(commands.Cog):
         # This is how we get IDs from the Context: ctx.message.author.roles[1].id
         print('success')
         # This setup-function is needed to let discord.py load the cog
-        await ctx.respond('Erfolg.')
+        await interaction.response.send_message('Erfolg.', ephemeral=True)
 
 
 def setup(bot: discord.Bot):
