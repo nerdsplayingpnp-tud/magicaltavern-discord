@@ -1,4 +1,4 @@
-# pylint: disable=R0201
+# pylint: disable=R0201, R0801
 
 """
 IMPORTS:
