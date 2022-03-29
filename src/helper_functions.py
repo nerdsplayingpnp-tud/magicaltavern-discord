@@ -45,3 +45,16 @@ def config_var(json_key: str):
     with open(from_project_root('/config/config.json'), encoding='utf-8') as conf:
         __conf_dict__ = json.load(conf)
         return __conf_dict__[json_key]
+
+
+def roles_var(json_key: str) -> int:
+    """roles_var is used to easily retrieve key/values from roles.json without having to do the
+    full 'with open...' dance everytime.
+    Args:
+        json_key (str): the key which you want to retrieve the value from.
+    Returns:
+        int: the id
+    """
+    with open(from_project_root('/config/roles.json'), encoding='utf-8') as role:
+        __role_dict__ = json.load(role)
+        return __role_dict__[json_key]
