@@ -24,13 +24,10 @@ utils
     """
 import os
 import json
-from discord.commands import (
-    slash_command,
-)
+
 import discord
 from discord.ext import commands
 from helper_functions import get_project_root, from_project_root, config_var
-
 
 roles_path = os.path.join(get_project_root(), "/config/roles.json")
 with open(from_project_root('/config/roles.json'), encoding='utf-8') as roles_json:
@@ -40,11 +37,9 @@ with open(from_project_root('/config/roles.json'), encoding='utf-8') as roles_js
 list_guilds = config_var('guilds')
 
 
-class UtilityCommands(commands.Cog):
+class DungeonMasterTools(commands.Cog):
     """
-    UtilityCommands houses all the utility commands.
-    Utility Commands are commands that are nice to have, but not essential to complete the bots'
-    actual goal.
+    TODO: Add Description
     """
 
     # Some utility commands.
@@ -70,50 +65,21 @@ class UtilityCommands(commands.Cog):
                                       commands.is_owner()))
         return commands.check(predicate)
 
-    @slash_command(
-        name='ping',
-        guild_ids=list_guilds)
-    async def ping(self, interaction: discord.Interaction):
-        """Simple ping-command to check if the bot is still alive.
-
-        Args:
-            ctx (commands.Context): The pycord-context object (passed automatically)
-        """
-        await interaction.response.send_message(f"Latenz: {round(self.bot.latency * 1000)}ms",
-                                                ephemeral=True)
-
-    @slash_command(
-        name='setstatus',
-        guild_ids=list_guilds
-    )
-    @check_admin()
-    async def setstatus(self, ctx: commands.Context, *, text: str):
-        """Manipulate the displayed Discord-Activity with this command.
-
-        Args:
-            ctx (commands.Context): The pycord-context object (passed automatically)
-            text (str): The text that you'd like the bot to display as its' "Playing"-message.
-        """
-        await self.bot.change_presence(activity=discord.Game(name=text))
-        await ctx.respond('Aktion erfolgreich ausgeführt.')
-
-    # Easy way to test new decorators, functions or anything else :)
-
-    @slash_command(
-        name='debug',
-        guild_ids=list_guilds
-    )
-    @check_admin()
-    async def debug(self, ctx: commands.Context):
-        """A debug function that can be used for anything
-
-        Args:
-            ctx (commands.Context): The pycord-context object (passed automatically)
-        """
-        # This is how we get IDs from the Context: ctx.message.author.roles[1].id
-        print('success')
-        # This setup-function is needed to let discord.py load the cog
-        await ctx.respond('Erfolg.')
+    # The following behaviour is expected:
+    # 1: Find out how much demand there is for a specific campaign. A DM can set how many people the
+    # campaign is designed for, and how many groups they are willing to take.
+    # 2: After this surveying period, if the requirements for at least one group are met, the DM can
+    # the people who reacted with "I'm interested" get notified to vote for a date and time. the DM
+    # can already withdraw certain weekday/time-combinations from the pool beforehand.
+    # 3: After at least 24h, the DM gets notified and asked to pick a weekday/time combo. If the DM
+    # allows multiple groups for one campaign, they can select multiple days on which campaign will
+    # take place.
+    # 4: The bot will now assign people to the group or groups. People get put in a queue the moment
+    # they select that they're interested in the campaign. The group-assignment respects this queue.
+    # 5: The roles and channels get created now. If a player leaves a group for some reason, the
+    # next person from the queue gets notified and asked if they'd still like to join the campaign.
+    # 6: When the campaign is eventually over, the DM can close the channels. All Roles and channels
+    # get archived/deleted.
 
 
 def setup(bot: discord.Bot):
@@ -122,4 +88,4 @@ def setup(bot: discord.Bot):
     Args:
         bot (commands.Bot): the Bot-object.
     """
-    bot.add_cog(UtilityCommands(bot))
+    bot.add_cog(DungeonMasterTools(bot))

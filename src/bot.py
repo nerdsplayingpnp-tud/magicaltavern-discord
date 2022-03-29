@@ -7,12 +7,12 @@
     logger.ownlogger: log
         Used for: logging, duh.
 
-    utils
-        Used for: please see utils.py docstrings for an explanation,
+    helper_functions
+        Used for: please see helper_functions.py docstrings for an explanation.
     """
 import discord
 from logger.ownlogger import log
-from utils import from_project_root
+from helper_functions import from_project_root
 
 
 bot = discord.Bot()  # Create a Bot with Prefix 'mt!'
@@ -25,7 +25,8 @@ try:
 
         # Load all the cogs
         bot.load_extension("commands.utility")
-
+        bot.load_extension("commands.dm_tools")
+        # Connect the bot to the discord api
         bot.run(__token__)
 except FileNotFoundError:
 
