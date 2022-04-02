@@ -3,22 +3,15 @@
 """
 IMPORTS:
 os
-
     Used for:
         Filesystem access and paths
-
 json
-
     Used for:
         opening and parsing the files in /config
-
 discord.commands, discord, discord.ext
-
     Used for:
         literally everything discord-api related
-
 utils
-
     Used for:
         these are my own functions that i added for various reasons. see utils docs.
     """
@@ -75,7 +68,6 @@ class UtilityCommands(commands.Cog):
         guild_ids=list_guilds)
     async def ping(self, interaction: discord.Interaction):
         """Simple ping-command to check if the bot is still alive.
-
         Args:
             ctx (commands.Context): The pycord-context object (passed automatically)
         """
@@ -89,7 +81,6 @@ class UtilityCommands(commands.Cog):
     @check_admin()
     async def setstatus(self, ctx: commands.Context, *, text: str):
         """Manipulate the displayed Discord-Activity with this command.
-
         Args:
             ctx (commands.Context): The pycord-context object (passed automatically)
             text (str): The text that you'd like the bot to display as its' "Playing"-message.
@@ -106,7 +97,6 @@ class UtilityCommands(commands.Cog):
     @check_admin()
     async def debug(self, ctx: commands.Context):
         """A debug function that can be used for anything
-
         Args:
             ctx (commands.Context): The pycord-context object (passed automatically)
         """
@@ -118,7 +108,6 @@ class UtilityCommands(commands.Cog):
 
 def setup(bot: discord.Bot):
     """This setup function is needed by pycord to "link" the cog to the bot.
-
     Args:
         bot (commands.Bot): the Bot-object.
     """

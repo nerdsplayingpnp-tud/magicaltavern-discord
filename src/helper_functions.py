@@ -50,8 +50,15 @@ def config_var(json_key: str):
 def roles_var(json_key: str) -> int:
     """roles_var is used to easily retrieve key/values from roles.json without having to do the
     full 'with open...' dance everytime.
+<<<<<<< HEAD
+
     Args:
         json_key (str): the key which you want to retrieve the value from.
+
+=======
+    Args:
+        json_key (str): the key which you want to retrieve the value from.
+>>>>>>> d928d9d63a5eb31f6ff9fe19ac7a97431fee0a0c
     Returns:
         int: the id
     """
