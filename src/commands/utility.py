@@ -70,7 +70,7 @@ class UtilityCommands(commands.Cog):
         guild_ids=list_guilds
     )
     @check_admin(commands.Context)
-    async def setstatus(self, ctx: commands.Context, *, text: str):
+    async def setstatus(self, interaction: discord.Interaction, *, text: str):
         """Manipulate the displayed Discord-Activity with this command.
 
         Args:
@@ -78,7 +78,7 @@ class UtilityCommands(commands.Cog):
             text (str): The text that you'd like the bot to display as its' "Playing"-message.
         """
         await self.bot.change_presence(activity=discord.Game(name=text))
-        await ctx.respond('Aktion erfolgreich ausgeführt.')
+        await interaction.response.send_message('Aktion erfolgreich ausgeführt.', ephemeral=True)
 
     # Easy way to test new decorators, functions or anything else :)
 
