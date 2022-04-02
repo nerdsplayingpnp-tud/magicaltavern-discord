@@ -22,6 +22,7 @@ utils
     Used for:
         these are my own functions that i added for various reasons. see utils docs.
     """
+from optparse import Option
 import os
 import json
 import discord
@@ -88,13 +89,17 @@ class DungeonMasterTools(commands.Cog):
         guild_ids=list_guilds
     )
     @commands.has_role(roles_var('role-dm'))
-    async def callback(self, interaction: discord.Interaction):
+    async def callback(self, interaction: discord.Interaction, ctx: discord.ApplicationContext,
+                       name: Option(str, "Gib den Namen der Kampagne ein, welche du Abenteurer:innen vorschlagen möchtest"),
+                       description: Option(str, 'Beschreibe deine Kampagne ein wenig genauer.'),
+                       group_size: Option(int, 'Gib an, wie viele Abenteurer:innen in einer Gruppe teilnehmen können werden.', min_value=3, max_value=20, default=5),
+                       group_amount: Option(int, 'Wähle, wie viele Gruppen du gleichzeitig DMen möchtest.', min_value=1, max_value=5, default=1)):
         """Suggest a campaign to the players.
 
         Args:
-            interaction (discord.Interaction): _description_
+            interaction (discord.Interaction): The Interaction object
         """
-        await interaction.response.send_message("Success", ephemeral=True)
+        await interaction.response.send_message(f"{name}, {description}, {group_size}, {group_amount}", ephemeral=False)
 
     # TODO: Handle "User doesn't have this role"-Errors!
     # @callback.error
