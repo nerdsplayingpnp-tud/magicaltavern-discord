@@ -90,6 +90,11 @@ class DungeonMasterTools(commands.Cog):
     )
     @commands.has_role(roles_var('role-dm'))
     async def callback(self, interaction: discord.Interaction):
+        """Suggest a campaign to the players.
+
+        Args:
+            interaction (discord.Interaction): _description_
+        """
         await interaction.response.send_message("Success", ephemeral=True)
 
     # TODO: Handle "User doesn't have this role"-Errors!
