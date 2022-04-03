@@ -88,24 +88,15 @@ class DungeonMasterTools(commands.Cog):
         name='suggest-campaign',
         guild_ids=list_guilds
     )
-    # @commands.has_role(roles_var('role-dm'))
-    async def hello(self,
-                    ctx: discord.ApplicationContext,
-                    gender: Option(str, "Choose your gender", choices=["Male", "Female", "Other"]),
-                    age: Option(int, "Enter your age", min_value=1,
-                                max_value=99, default=18)
-                    # passing the default value makes an argument optional
-                    # you also can create optional argument using:
-                    # age: Option(int, "Enter your age") = 18
-                    ):
+    @commands.has_role(roles_var('role-dm'))
+    async def callback(self,
+                       ctx: discord.Interaction,
+                       gender: Option(str, "Choose your gender", choices=["Male", "Female", "Other"]),
+                       age: Option(int, "Enter your age", min_value=1,
+                                   max_value=99, default=18)
+                       ):
         print(f"{gender}, {age}")
-        await ctx.respond("a")
-
-    # TODO: Handle "User doesn't have this role"-Errors!
-    # @callback.error
-    # async def callback_error(error, interaction: discord.Interaction):
-    #    if isinstance(error, commands.MissingPermissions):
-    #        interaction.response.send_message("Failure", ephemeral=True)
+        await ctx.response.send_message("a")
 
 
 def setup(bot: discord.Bot):
