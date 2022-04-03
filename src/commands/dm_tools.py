@@ -91,12 +91,17 @@ class DungeonMasterTools(commands.Cog):
     @commands.has_role(roles_var('role-dm'))
     async def callback(self,
                        ctx: discord.Interaction,
-                       gender: Option(str, "Choose your gender", choices=["Male", "Female", "Other"]),
-                       age: Option(int, "Enter your age", min_value=1,
-                                   max_value=99, default=18)
+                       name: Option(str, "Der Name der Kampagne."),
+                       description: Option(str,
+                                           "Beschreibe deine Kampagne hier kurz. Worum geht es? Weniger als 1800 Zeichen."),
+                       min_players: Option(int, "Wie viele Leute werden für die Kampagne mindestens benötigt?", min_value=3,
+                                           max_value=10),
+                       max_players: Option(
+                           int, "Wie viele Leute können maximal an der Kampagne teilnehmen?", min_value=5, max_value=10),
+                       content_warnings: Option(
+                           str, "Gib hier explizite Contenthinweise an.")
                        ):
-        print(f"{gender}, {age}")
-        await ctx.response.send_message("a")
+        await ctx.response.send_message(f"{name}, {description}, {min_players}, {max_players}, {content_warnings}")
 
 
 def setup(bot: discord.Bot):
