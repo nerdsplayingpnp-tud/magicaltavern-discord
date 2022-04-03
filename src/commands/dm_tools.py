@@ -22,7 +22,7 @@ utils
     Used for:
         these are my own functions that i added for various reasons. see utils docs.
     """
-from optparse import Option
+from discord.commands import Option
 import os
 import json
 import discord
@@ -30,7 +30,7 @@ from discord.ext import commands
 from discord.commands import (
     slash_command,
 )
-from helper_functions import get_project_root, from_project_root, config_var, roles_var
+from helper_functions import get_project_root, from_project_root, config_var, roles_var  # pylint: disable=E0401
 
 roles_path = os.path.join(get_project_root(), "/config/roles.json")
 with open(from_project_root('/config/roles.json'), encoding='utf-8') as roles_json:
@@ -88,18 +88,18 @@ class DungeonMasterTools(commands.Cog):
         name='suggest-campaign',
         guild_ids=list_guilds
     )
-    @commands.has_role(roles_var('role-dm'))
-    async def callback(self, interaction: discord.Interaction, ctx: discord.ApplicationContext,
-                       name: Option(str, "Gib den Namen der Kampagne ein, welche du Abenteurer:innen vorschlagen möchtest"),
-                       description: Option(str, 'Beschreibe deine Kampagne ein wenig genauer.'),
-                       group_size: Option(int, 'Gib an, wie viele Abenteurer:innen in einer Gruppe teilnehmen können werden.', min_value=3, max_value=20, default=5),
-                       group_amount: Option(int, 'Wähle, wie viele Gruppen du gleichzeitig DMen möchtest.', min_value=1, max_value=5, default=1)):
-        """Suggest a campaign to the players.
-
-        Args:
-            interaction (discord.Interaction): The Interaction object
-        """
-        await interaction.response.send_message(f"{name}, {description}, {group_size}, {group_amount}", ephemeral=False)
+    # @commands.has_role(roles_var('role-dm'))
+    async def hello(self,
+                    ctx: discord.ApplicationContext,
+                    gender: Option(str, "Choose your gender", choices=["Male", "Female", "Other"]),
+                    age: Option(int, "Enter your age", min_value=1,
+                                max_value=99, default=18)
+                    # passing the default value makes an argument optional
+                    # you also can create optional argument using:
+                    # age: Option(int, "Enter your age") = 18
+                    ):
+        print(f"{gender}, {age}")
+        await ctx.respond("a")
 
     # TODO: Handle "User doesn't have this role"-Errors!
     # @callback.error
