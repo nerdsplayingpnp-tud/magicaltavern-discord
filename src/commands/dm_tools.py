@@ -90,7 +90,7 @@ class DungeonMasterTools(commands.Cog):
         guild_ids=list_guilds
     )
     @commands.has_role(roles_var('role-dm'))
-    async def callback(self,
+    async def callback(self,  # pylint: disable=R0913
                        ctx: discord.Interaction,
                        name: Option(str, "Der Name der Kampagne."),
                        description: Option(str, "Beschreibe deine Kampagne hier kurz. Worum geht es? Weniger als 1800 Zeichen."),  # pylint: disable=C0301
