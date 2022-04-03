@@ -22,9 +22,10 @@ utils
     Used for:
         these are my own functions that i added for various reasons. see utils docs.
     """
-from discord.commands import Option
+
 import os
 import json
+from discord.commands import Option
 import discord
 from discord.ext import commands
 from discord.commands import (
@@ -92,16 +93,20 @@ class DungeonMasterTools(commands.Cog):
     async def callback(self,
                        ctx: discord.Interaction,
                        name: Option(str, "Der Name der Kampagne."),
-                       description: Option(str,
-                                           "Beschreibe deine Kampagne hier kurz. Worum geht es? Weniger als 1800 Zeichen."),
-                       min_players: Option(int, "Wie viele Leute werden für die Kampagne mindestens benötigt?", min_value=3,
-                                           max_value=10),
-                       max_players: Option(
-                           int, "Wie viele Leute können maximal an der Kampagne teilnehmen?", min_value=5, max_value=10),
+                       description: Option(str, "Beschreibe deine Kampagne hier kurz. Worum geht es? Weniger als 1800 Zeichen."),  # pylint: disable=C0301
+                       min_players: Option(int, "Wie viele Leute werden für die Kampagne mindestens benötigt?", min_value=3, max_value=10),  # pylint: disable=C0301
+                       max_players: Option(int, "Wie viele Leute können maximal an der Kampagne teilnehmen?", min_value=5, max_value=10),  # pylint: disable=C0301
                        content_warnings: Option(
                            str, "Gib hier explizite Contenthinweise an.")
                        ):
-        await ctx.response.send_message(f"{name}, {description}, {min_players}, {max_players}, {content_warnings}")
+        """callback (suggest-campaign) does what you think it does: You can suggest a campaign to
+        your players.
+
+        Args:
+            ctx (discord.Interaction): Discord Interaction
+        """
+        await ctx.response.send_message(
+            f"{name}, {description}, {min_players}, {max_players},{content_warnings}")
 
 
 def setup(bot: discord.Bot):
