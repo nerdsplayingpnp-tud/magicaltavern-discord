@@ -12,13 +12,20 @@
     """
 import discord
 from logger.ownlogger import log
-from helper_functions import from_project_root
+from helper_functions import from_project_root, config_var
 
 
 bot = discord.Bot()  # Create a Bot with Prefix 'mt!'
 
-# If a file token.txt exists: Run the bot. If not:
-# Ask for the token to be stored in the file, and create the file.
+
+@bot.event
+async def on_ready():
+    """Gets executed once the bot is logged in.
+    """
+    version = config_var('version')
+    await bot.change_presence(activity=discord.Game(f'Build #{version}'))
+    # If a file token.txt exists: Run the bot. If not:
+    # Ask for the token to be stored in the file, and create the file.
 try:
     with open(from_project_root('/config/token.txt'), encoding='utf-8') as token_file:
         __token__ = token_file.read()
