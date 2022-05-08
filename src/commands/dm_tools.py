@@ -105,8 +105,16 @@ class DungeonMasterTools(commands.Cog):
         Args:
             ctx (discord.Interaction): Discord Interaction
         """
-        await ctx.response.send_message(
-            f"{name}, {description}, {min_players}, {max_players},{content_warnings}")
+        embed = discord.Embed(
+            title=name,
+            description=f"**Beschreibung:** {description}",
+            color=0xDDA0DD
+        )
+        embed.add_field(name="Minimal benötigte Anzahl an Spieler:innen", value=min_players)
+        embed.add_field(name="Maximale Anzahl an Spieler:innen", value=max_players)
+        embed.add_field(name="Contentwarnungen", value=content_warnings, inline=False)
+
+        await ctx.response.send_message(embed=embed)
 
 
 def setup(bot: discord.Bot):
