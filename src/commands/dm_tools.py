@@ -22,11 +22,16 @@ utils
     Used for:
         these are my own functions that i added for various reasons. see utils docs.
     """
+
 import os
 import json
+from discord.commands import Option
 import discord
 from discord.ext import commands
-from helper_functions import get_project_root, from_project_root, config_var
+from discord.commands import (
+    slash_command,
+)
+from helper_functions import get_project_root, from_project_root, config_var, roles_var  # pylint: disable=E0401
 
 roles_path = os.path.join(get_project_root(), "/config/roles.json")
 with open(from_project_root('/config/roles.json'), encoding='utf-8') as roles_json:
@@ -79,6 +84,37 @@ class DungeonMasterTools(commands.Cog):
     # next person from the queue gets notified and asked if they'd still like to join the campaign.
     # 6: When the campaign is eventually over, the DM can close the channels. All Roles and channels
     # get archived/deleted.
+
+    @slash_command(
+        name='suggest-campaign',
+        guild_ids=list_guilds,
+    )
+    @commands.has_role(roles_var('role-dm'))
+    async def suggest_campaign(self,  # pylint: disable=R0913
+                               ctx: discord.Interaction,
+                               name: Option(str, "Der Name der Kampagne."),
+                               description: Option(str, "Beschreibe deine Kampagne hier kurz. Worum geht es? Weniger als 1800 Zeichen."),  # pylint: disable=C0301
+                               min_players: Option(int, "Wie viele Leute werden für die Kampagne mindestens benötigt?", min_value=3, max_value=10),  # pylint: disable=C0301
+                               max_players: Option(int, "Wie viele Leute können maximal an der Kampagne teilnehmen?", min_value=5, max_value=10),  # pylint: disable=C0301
+                               content_warnings: Option(
+                                   str, "Gib hier explizite Contenthinweise an.")
+                               ):
+        """callback (suggest-campaign) does what you think it does: You can suggest a campaign to
+        your players.
+
+        Args:
+            ctx (discord.Interaction): Discord Interaction
+        """
+        embed = discord.Embed(
+            title=name,
+            description=f"**Beschreibung:** {description}",
+            color=0xDDA0DD
+        )
+        embed.add_field(name="Minimal benötigte Anzahl an Spieler:innen", value=min_players)
+        embed.add_field(name="Maximale Anzahl an Spieler:innen", value=max_players)
+        embed.add_field(name="Contentwarnungen", value=content_warnings, inline=False)
+
+        await ctx.response.send_message(embed=embed)
 
 
 def setup(bot: discord.Bot):
