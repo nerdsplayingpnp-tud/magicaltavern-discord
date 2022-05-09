@@ -22,8 +22,7 @@ bot = discord.Bot()  # Create a Bot with Prefix 'mt!'
 async def on_ready():
     """Gets executed once the bot is logged in.
     """
-    version = config_var('version')
-    await bot.change_presence(activity=discord.Game(f'Build #{version}'))
+    await bot.change_presence(activity=discord.Game('Die Taverne hat geöffnet!'))
     # If a file token.txt exists: Run the bot. If not:
     # Ask for the token to be stored in the file, and create the file.
 try:
