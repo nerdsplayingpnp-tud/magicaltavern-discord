@@ -100,10 +100,10 @@ class DungeonMasterTools(commands.Cog):
                                content_warnings: Option(str, description="Gib hier explizite Contenthinweise an."),
                                ruleset: Option(str, description="Welches Regelwerk verwendet die Kampagne?", name="regelwerk"),
                                type: Option(str, name="typ", choices=["Oneshot (1-2 Sessions)", "Kürzere Kampagne (3-7 Sessions)", "Längere Kampagne (7+ Sessions)"], description="Ist deine Kampagne eher ein Oneshot oder eine längere Kampagne?"),
-                               language: Option(str, name="sprache", description="In welchen Sprachen wird dein Abenteuer angeboten?", choices=["Englisch", "Deutsch", "Bilingual"]),
+                               language: Option(str, name="sprache", description="In welchen Sprachen wird dein Abenteuer angeboten?", choices=["Englisch", "Deutsch", "Englisch & Deutsch"]),
                                character_creation: Option(str, name="charaktererstellung", description="Wie wird die Charaktererstellung gehandlet?"),
-                               notes: Option(str, "a", name="notizen_und_sonstiges"),
-                               attachment: Option(discord.Attachment, required=False, name="bild")
+                               notes: Option(str, "Hier ist Platz für alles, was noch offen ist.", name="notizen_und_sonstiges"),
+                               image_url: Option(str, description="Direktlink zu einem Bild, welches du einbetten möchtest.", required=False) = None
                                ):
 
         """callback (suggest-campaign) does what you think it does: You can suggest a campaign to
@@ -112,6 +112,8 @@ class DungeonMasterTools(commands.Cog):
         Args:
             ctx (discord.Interaction): Discord Interaction
         """
+        if image_url is None:
+            image_url = "https://cdn.discordapp.com/avatars/959837234033475584/744a62cb7f9f8e94931e1400a6ea45f4.png?size=1024"
         embed = discord.Embed(
             title=name,
             description=f"**Beschreibung:** {description}",
@@ -120,7 +122,13 @@ class DungeonMasterTools(commands.Cog):
         embed.add_field(name="Minimal benötigte Anzahl an Spieler:innen", value=min_players)
         embed.add_field(name="Maximale Anzahl an Spieler:innen", value=max_players)
         embed.add_field(name="Contentwarnungen", value=content_warnings, inline=False)
-
+        embed.add_field(name="Verwendetes Regelwerk", value=ruleset, inline=True)
+        embed.add_field(name="Länge der Kampagne", value=type, inline=True),
+        embed.add_field(name="Sprache", value=language, inline=True),
+        embed.add_field(name="Richtlinien zur Charaktererstellung", value=character_creation, inline=False),
+        embed.add_field(name="Weitere Bemerkungen", value=notes, inline=False),
+        embed.set_author(name=ctx.user.name)
+        embed.set_image(url=image_url)
         await ctx.response.send_message(embed=embed)
 
 
