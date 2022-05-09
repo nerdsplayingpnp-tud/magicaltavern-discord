@@ -89,16 +89,23 @@ class DungeonMasterTools(commands.Cog):
         name='suggest-campaign',
         guild_ids=list_guilds,
     )
+    # Notizen
     @commands.has_role(roles_var('role-dm'))
     async def suggest_campaign(self,  # pylint: disable=R0913
                                ctx: discord.Interaction,
                                name: Option(str, "Der Name der Kampagne."),
-                               description: Option(str, "Beschreibe deine Kampagne hier kurz. Worum geht es? Weniger als 1800 Zeichen."),  # pylint: disable=C0301
-                               min_players: Option(int, "Wie viele Leute werden für die Kampagne mindestens benötigt?", min_value=3, max_value=10),  # pylint: disable=C0301
-                               max_players: Option(int, "Wie viele Leute können maximal an der Kampagne teilnehmen?", min_value=5, max_value=10),  # pylint: disable=C0301
-                               content_warnings: Option(
-                                   str, "Gib hier explizite Contenthinweise an.")
+                               description: Option(str, description="Beschreibt hier kurz die Kampagne"),  # pylint: disable=C0301
+                               min_players: Option(int, description="Wie viele Leute werden für die Kampagne mindestens benötigt? Min. 1, Max. 10", min_value=1, max_value=10),  # pylint: disable=C0301
+                               max_players: Option(int, description="Wie viele Leute können maximal an der Kampagne teilnehmen? Min. 3, Max. 10", min_value=3, max_value=10),  # pylint: disable=C0301
+                               content_warnings: Option(str, description="Gib hier explizite Contenthinweise an."),
+                               ruleset: Option(str, description="Welches Regelwerk verwendet die Kampagne?", name="regelwerk"),
+                               type: Option(str, name="typ", choices=["Oneshot (1-2 Sessions)", "Kürzere Kampagne (3-7 Sessions)", "Längere Kampagne (7+ Sessions)"], description="Ist deine Kampagne eher ein Oneshot oder eine längere Kampagne?"),
+                               language: Option(str, name="sprache", description="In welchen Sprachen wird dein Abenteuer angeboten?", choices=["Englisch", "Deutsch", "Bilingual"]),
+                               character_creation: Option(str, name="charaktererstellung", description="Wie wird die Charaktererstellung gehandlet?"),
+                               notes: Option(str, "a", name="notizen_und_sonstiges"),
+                               attachment: Option(discord.Attachment, required=False, name="bild")
                                ):
+
         """callback (suggest-campaign) does what you think it does: You can suggest a campaign to
         your players.
 
