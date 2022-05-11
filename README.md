@@ -1,5 +1,5 @@
 # magicaltavern
-![build ci](https://github.com/bitfl0wer/magicaltavern/actions/workflows/pylint.yml/badge.svg)
+![build ci](https://github.com/bitfl0wer/magicaltavern/actions/workflows/pylint.yml/badge.svg) i hate pylint <3
 
 ---
 
