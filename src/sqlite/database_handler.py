@@ -16,6 +16,3 @@ try:
     log('Table "campaigns" created.')
 except sqlite3.OperationalError:
     log('Table "campaigns" already exists. Not creating table.')
-
-conn.commit()
-conn.close()
