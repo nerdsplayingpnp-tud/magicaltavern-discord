@@ -13,8 +13,9 @@
 import discord
 from logger.ownlogger import log
 from helper_functions import from_project_root, config_var
+from src.sqlite.database_handler import db_init
 
-
+db_init()  # Ensure the database tables exist
 bot = discord.Bot()  # Create a Bot with Prefix 'mt!'
 
 
@@ -25,6 +26,8 @@ async def on_ready():
     await bot.change_presence(activity=discord.Game('Die Taverne hat geöffnet!'))
     # If a file token.txt exists: Run the bot. If not:
     # Ask for the token to be stored in the file, and create the file.
+
+
 try:
     with open(from_project_root('/config/token.txt'), encoding='utf-8') as token_file:
         __token__ = token_file.read()
