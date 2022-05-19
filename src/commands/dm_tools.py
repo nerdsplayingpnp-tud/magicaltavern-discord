@@ -1,28 +1,3 @@
-# pylint: disable=R0201, R0801
-
-"""
-IMPORTS:
-os
-
-    Used for:
-        Filesystem access and paths
-
-json
-
-    Used for:
-        opening and parsing the files in /config
-
-discord.commands, discord, discord.ext
-
-    Used for:
-        literally everything discord-api related
-
-utils
-
-    Used for:
-        these are my own functions that i added for various reasons. see utils docs.
-    """
-
 import os
 import json
 from discord.commands import Option
@@ -31,7 +6,7 @@ from discord.ext import commands
 from discord.commands import (
     slash_command,
 )
-from helper_functions import get_project_root, from_project_root, config_var, roles_var  # pylint: disable=E0401
+from src.helper_functions import get_project_root, from_project_root, config_var, roles_var
 
 roles_path = os.path.join(get_project_root(), "/config/roles.json")
 with open(from_project_root('/config/roles.json'), encoding='utf-8') as roles_json:
