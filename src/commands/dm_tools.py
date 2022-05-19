@@ -96,7 +96,8 @@ class DungeonMasterTools(commands.Cog):
                                name: Option(str, "Der Name der Kampagne."),
                                description: Option(str, description="Beschreibt hier kurz die Kampagne", name="beschreibung"),  # pylint: disable=C0301
                                min_players: Option(int, description="Wie viele Leute werden für die Kampagne mindestens benötigt? Min. 1, Max. 10", min_value=1, max_value=10),  # pylint: disable=C0301
-                               max_players: Option(int, description="Wie viele Leute können maximal an der Kampagne teilnehmen? Min. 3, Max. 10", min_value=3, max_value=10),  # pylint: disable=C0301
+                               max_players: Option(int, description="Wie viele Leute können maximal an der Kampagne teilnehmen? Min. 3, Max. 10", min_value=3, max_value=10),
+                               complexity: Option(str, description="Gib an, wie komplex deine Kampagne in etwa ist.", choices=["Einsteigerfreundlich", "Fortgeschritten", "Sehr fortgeschritten"]),
                                place: Option(str, description="Wo wird deine Kampagne stattfinden?", choices=["Online", "Präsenz", "Beides"], name="ort"),
                                time: Option(str, description="Zu welcher Zeit soll das PNP ungefähr stattfinden?", name="zeit"),
                                content_warnings: Option(str, description="Gib hier explizite Contenthinweise an.", name="content_warnungen"),
@@ -124,15 +125,16 @@ class DungeonMasterTools(commands.Cog):
         )
         embed.add_field(name="Minimal benötigte Anzahl an Spieler:innen", value=min_players)
         embed.add_field(name="Maximale Anzahl an Spieler:innen", value=max_players)
-        embed.add_field(name="Ort", value=place, inline=True),
-        embed.add_field(name="Zeit", value=time, inline=True),
+        embed.add_field(name="Komplexität", value=complexity)
+        embed.add_field(name="Ort", value=place, inline=True)
+        embed.add_field(name="Zeit", value=time, inline=True)
         embed.add_field(name="Contentwarnungen", value=content_warnings, inline=False)
         embed.add_field(name="Verwendetes Regelwerk", value=ruleset, inline=True)
-        embed.add_field(name="Länge der Kampagne", value=type, inline=True),
-        embed.add_field(name="Sprache", value=language, inline=True),
+        embed.add_field(name="Länge der Kampagne", value=type, inline=True)
+        embed.add_field(name="Sprache", value=language, inline=True)
         embed.add_field(name="Richtlinien zur Charaktererstellung", value=character_creation, inline=False),
-        embed.add_field(name="Briefing", value=briefing, inline=False),
-        embed.add_field(name="Weitere Bemerkungen", value=notes, inline=False),
+        embed.add_field(name="Briefing", value=briefing, inline=False)
+        embed.add_field(name="Weitere Bemerkungen", value=notes, inline=False)
         embed.set_author(name=ctx.user.name)
         embed.set_image(url=image_url)
         await ctx.response.send_message(embed=embed)
