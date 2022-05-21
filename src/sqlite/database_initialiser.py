@@ -1,8 +1,9 @@
 import sqlite3
 from src.helper_functions import from_project_root
 from src.logger.ownlogger import log
+from src.sqlite.database_handler import Connection as Handler
 
-conn = sqlite3.connect(from_project_root('/data/campaign.db'))
+conn = Handler.create_connection()
 cursor = conn.cursor()
 
 
