@@ -18,10 +18,14 @@ class Connection(metaclass=ConnectionMeta):
     cursor = connection.cursor()
 
     @staticmethod
-    def create_connection(db_file):
+    def create_connection() -> sqlite3.Connection:
+        """
+        Used to create the connection to the campaign.db file.
+        @return: The connection object
+        """
         conn = None
         try:
-            conn = sqlite3.connect(db_file)
+            conn = sqlite3.connect(from_project_root('/data/campaign.db'))
             return conn
         except sqlite3.OperationalError as e:
             log(str(e), "red")
