@@ -1,6 +1,3 @@
-"""
-    I am not writing any more import-docstrings. these are pointless.
-    """
 from pathlib import Path
 import json
 
