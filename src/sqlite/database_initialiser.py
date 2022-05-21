@@ -4,7 +4,7 @@ from src.logger.ownlogger import log
 from src.sqlite.database_handler import Connection as Handler
 
 conn = Handler.create_connection()
-cursor = conn.cursor()
+cursor = conn.cursor()  # should probably be done differently
 
 
 def db_init() -> None:
