@@ -16,3 +16,28 @@ class ConnectionMeta(type):
 class Connection(metaclass=ConnectionMeta):
     connection = sqlite3.connect(from_project_root('/data/campaign.db'))
     cursor = connection.cursor()
+
+    @staticmethod
+    def create_connection(db_file):
+        conn = None
+        try:
+            conn = sqlite3.connect(db_file)
+            return conn
+        except sqlite3.OperationalError as e:
+            log(str(e), "red")
+        return conn
+
+    @staticmethod
+    def create_table(conn: sqlite3.Connection, create_table_statement: str) -> None:
+        """
+        Create a table with a given connection.
+        @param conn: Connection to a database
+        @param create_table_statement: An sqlite3 create_table_statement.
+        @return: None
+        """
+        try:
+            c = conn.cursor()
+            c.execute(create_table_statement)
+            conn.commit()
+        except sqlite3.OperationalError as e:
+            log(str(e), "red")
