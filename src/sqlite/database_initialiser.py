@@ -8,6 +8,10 @@ cursor = conn.cursor()
 
 def db_init() -> None:
     try:
+        cursor.execute("""CREATE TABLE IF NOT EXISTS enrollments (
+            id integer PRIMARY KEY
+            
+        );""")
         cursor.execute("""CREATE TABLE IF NOT EXISTS campaigns (
             id integer PRIMARY KEY,
             name text NOT NULL,
@@ -15,7 +19,7 @@ def db_init() -> None:
             players_max integer NOT NULL,
             open integer NOT NULL DEFAULT 1,
             date_created text NOT NULL
-        )""")
+        );""")
         conn.commit()
         conn.close()
         log('Table "campaigns" exists.')
