@@ -16,7 +16,7 @@ from helper_functions import from_project_root, config_var
 from src.sqlite.database_initialiser import db_init
 
 db_init()  # Ensure the database tables exist
-bot = discord.Bot()  # Create a Bot with Prefix 'mt!'
+bot = discord.Bot()
 
 
 @bot.event
