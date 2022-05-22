@@ -14,8 +14,6 @@ class ConnectionMeta(type):
 
 
 class Connection(metaclass=ConnectionMeta):
-    connection = sqlite3.connect(from_project_root('/data/campaign.db'))
-    cursor = connection.cursor()
 
     @staticmethod
     def create_connection() -> sqlite3.Connection:
@@ -32,16 +30,35 @@ class Connection(metaclass=ConnectionMeta):
         return conn
 
     @staticmethod
-    def create_table(conn: sqlite3.Connection, create_table_statement: str) -> None:
+    def create_cursor(conn: sqlite3.Connection) -> sqlite3.Cursor:
+        """
+        Creates a cursor from a given connection.
+        @param conn: An sqlite3 Connection object
+        """
+        return conn.cursor()
+
+    @staticmethod
+    def execute_query(conn: sqlite3.Connection, create_table_statement: str, verbose: bool = False) -> None:
         """
         Create a table with a given connection.
+        @param verbose: Whether a successful database entry should be logged or not.
         @param conn: Connection to a database
         @param create_table_statement: An sqlite3 create_table_statement.
         @return: None
         """
         try:
-            c = conn.cursor()
+            c = Connection.create_cursor(conn)
             c.execute(create_table_statement)
             conn.commit()
+            conn.close()
+            if verbose:
+                log(str(create_table_statement + " was succesfully executed."))
         except sqlite3.OperationalError as e:
             log(str(e), "red")
+
+    @staticmethod
+    def execute_queery(conn: sqlite3.Connection, create_table_statement: str, verbose: bool = False) -> None:
+        """
+        A littol easteregg c: 🏳‍🌈
+        """
+        Connection.execute_query(conn, create_table_statement, verbose)
