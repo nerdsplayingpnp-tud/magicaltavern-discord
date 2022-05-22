@@ -38,7 +38,7 @@ class Connection(metaclass=ConnectionMeta):
         return conn.cursor()
 
     @staticmethod
-    def execute_query(conn: sqlite3.Connection, create_table_statement: str, verbose: bool = False) -> None:
+    def create_table(conn: sqlite3.Connection, create_table_statement: str, verbose: bool = False) -> None:
         """
         Create a table with a given connection.
         @param verbose: Whether a successful database entry should be logged or not.
@@ -61,4 +61,26 @@ class Connection(metaclass=ConnectionMeta):
         """
         A littol easteregg c: 🏳‍🌈
         """
-        Connection.execute_query(conn, create_table_statement, verbose)
+        Connection.create_table(conn, create_table_statement, verbose)
+
+    @staticmethod
+    def insert_into_campaigns(conn: sqlite3.Connection, name: str, players_min: int, players_max: int,
+                              date_created: str, enrollments) -> int:
+        """
+        Insert data into a given table.
+        @param enrollments: TODO Write Docstring
+        @param date_created:
+        @param players_max:
+        @param players_min:
+        @param name:
+        @param conn: Connection to a database
+        """
+        ins = f"""INSERT INTO campaigns(name, players_min, players_max, date_created, enrollments) VALUES(?,?,?,?,?)"""
+        cursor = Connection.create_cursor(conn)
+        try:
+            values = [name, players_min, players_max, date_created, enrollments]
+            cursor.execute(ins, values)
+            conn.commit()
+            return cursor.lastrowid
+        except sqlite3.OperationalError as e:
+            log(str(e), "red")
