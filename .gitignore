@@ -8,7 +8,7 @@
 
 config/token.txt
 config/token_main.txt
-data/campaign.db
+data/**
 
 # User-specific stuff
 .idea/**/workspace.xml
