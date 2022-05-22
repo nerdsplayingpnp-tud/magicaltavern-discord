@@ -133,7 +133,7 @@ Linux and macOS:
    ```
 5. Start the bot.
 <br/>
-From the project source (magicaltavern/) type:
+From the project source (magicaltavern/) type
     ```sh
     python -m src.bot
     ```
