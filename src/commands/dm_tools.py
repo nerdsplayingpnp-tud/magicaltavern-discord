@@ -6,6 +6,7 @@ from discord.ext import commands
 from discord.commands import (
     slash_command,
 )
+from src.sqlite.database_handler import Connection as Handler
 from src.helper_functions import get_project_root, from_project_root, config_var, roles_var
 import sqlite3
 
@@ -14,8 +15,7 @@ with open(from_project_root('/config/roles.json'), encoding='utf-8') as roles_js
     __roles_dict__ = json.load(roles_json)
     id_role_admin = __roles_dict__['role-admin']
 list_guilds = config_var('guilds')
-conn = sqlite3.connect(from_project_root('/data/campaign.db'))
-cursor = conn.cursor()
+import datetime
 
 
 class DungeonMasterTools(commands.Cog):
@@ -107,6 +107,10 @@ class DungeonMasterTools(commands.Cog):
         embed.set_author(name=ctx.user.name)
         embed.set_image(url=image_url)
         await ctx.response.send_message(embed=embed)
+        date = datetime.date.today()
+        Handler.insert_into_campaigns(Handler.create_connection(), name, min_players, max_players, date.strftime("%m%d%Y"), None)
+
+        # Insert the campaign into the database
 
 
 def setup(bot: discord.Bot):
