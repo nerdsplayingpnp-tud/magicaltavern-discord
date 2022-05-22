@@ -8,6 +8,7 @@
 
 config/token.txt
 config/token_main.txt
+data/**
 
 # User-specific stuff
 .idea/**/workspace.xml
