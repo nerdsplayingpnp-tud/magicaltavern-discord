@@ -84,7 +84,8 @@ class DungeonMasterTools(commands.Cog):
                                                                   "möchtest.", required=False) = None
                                ):
         if image_url is None:
-            image_url = "https://cdn.discordapp.com/avatars/959837234033475584/744a62cb7f9f8e94931e1400a6ea45f4.png?size=1024"
+            image_url = "https://cdn.discordapp.com/avatars/959837234033475584/744a62cb7f9f8e94931e1400a6ea45f4.png" \
+                        "?size=1024 "
         embed = discord.Embed(
             title=name,
             description=f"**Beschreibung:** {description}",
