@@ -1,5 +1,6 @@
 import os
 import json
+import datetime
 from discord.commands import Option
 import discord
 from discord.ext import commands
@@ -7,15 +8,13 @@ from discord.commands import (
     slash_command,
 )
 from src.sqlite.database_handler import Connection as Handler
-from src.helper_functions import get_project_root, from_project_root, config_var, roles_var
-import sqlite3
+from src.helper_functions import get_project_root, from_project_root, config_var, roles_var, user_has_role_id
 
 roles_path = os.path.join(get_project_root(), "/config/roles.json")  # why lol
 with open(from_project_root('/config/roles.json'), encoding='utf-8') as roles_json:  # also just why lmfao
     __roles_dict__ = json.load(roles_json)
     id_role_admin = __roles_dict__['role-admin']
 list_guilds = config_var('guilds')
-import datetime
 
 
 class DungeonMasterTools(commands.Cog):
@@ -41,7 +40,6 @@ class DungeonMasterTools(commands.Cog):
         name='suggest-campaign',
         guild_ids=list_guilds,
     )
-    @commands.has_role(roles_var('role-dm'))
     async def suggest_campaign(self,
                                ctx: discord.Interaction,
                                name: Option(str, "Der Name der Kampagne."),
@@ -72,8 +70,8 @@ class DungeonMasterTools(commands.Cog):
                                language: Option(str, name="sprache", description="In welchen Sprachen wird dein "
                                                                                  "Abenteuer angeboten?",
                                                 choices=["Englisch", "Deutsch", "Englisch & Deutsch"]),
-                               character_creation: Option(str, name="charaktererstellung", description="Wie wird die "
-                                                                                                       "Charaktererstellung gehandlet?"),
+                               character_creation: Option(str, name="charaktererstellung",
+                                                          description="Wie wird die Charaktererstellung gehandlet?"),
                                briefing: Option(str, name="briefing", description="Wie hast du vor deine "
                                                                                   "Spieler:innen zu briefen (Session "
                                                                                   "0 irl/online, per DM, "
@@ -83,13 +81,18 @@ class DungeonMasterTools(commands.Cog):
                                image_url: Option(str, description="Direktlink zu einem Bild, welches du einbetten "
                                                                   "möchtest.", required=False) = None
                                ):
-        if image_url is None:
-            image_url = "https://cdn.discordapp.com/avatars/959837234033475584/744a62cb7f9f8e94931e1400a6ea45f4.png" \
-                        "?size=1024 "
+
+        if not user_has_role_id(ctx, roles_var('role-dm')):
+            await ctx.response.send_message("Du siehst mir aber nicht wie ein:e Spielemeister:in aus... Ich hab' aber "
+                                            "gehört dass die Leiter:innen dieser Taverne wieder anheuern! Schau mal "
+                                            "drüben bei #dm-bewerbung vorbei!", ephemeral=True)
+            return
+
+        color = discord.Colour.random()
         embed = discord.Embed(
             title=name,
             description=f"**Beschreibung:** {description}",
-            color=0xDDA0DD
+            color=color
         )
         # Take all the info and send it as a fancy embed:
         embed.add_field(name="Minimal benötigte Anzahl an Spieler:innen", value=min_players)
@@ -105,10 +108,12 @@ class DungeonMasterTools(commands.Cog):
         embed.add_field(name="Briefing", value=briefing, inline=False)
         embed.add_field(name="Weitere Bemerkungen", value=notes, inline=False)
         embed.set_author(name=ctx.user.name)
-        embed.set_image(url=image_url)
+        if image_url is not None:
+            embed.set_image(url=image_url)
         await ctx.response.send_message(embed=embed)
         date = datetime.date.today()
-        Handler.insert_into_campaigns(Handler.create_connection(), name, min_players, max_players, date.strftime("%m%d%Y"), None)
+        Handler.insert_into_campaigns(Handler.create_connection(), name, min_players, max_players,
+                                      date.strftime("%m-%d-%Y"), None)
 
         # Insert the campaign into the database
 
