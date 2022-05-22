@@ -24,19 +24,15 @@
 <br />
 <div align="center">
   <a href="https://github.com/bitfl0wer/magicaltavern">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+    <img src="https://cdn.discordapp.com/avatars/959837234033475584/744a62cb7f9f8e94931e1400a6ea45f4.png?size=256" alt="Logo" width="80" height="80">
   </a>
 
 <h3 align="center">magicaltavern</h3>
 
   <p align="center">
-    project_description
-    <br />
-    <a href="https://github.com/bitfl0wer/magicaltavern"><strong>Explore the docs »</strong></a>
+    Organize your PnP Sessions.
     <br />
     <br />
-    <a href="https://github.com/bitfl0wer/magicaltavern">View Demo</a>
-    ·
     <a href="https://github.com/bitfl0wer/magicaltavern/issues">Report Bug</a>
     ·
     <a href="https://github.com/bitfl0wer/magicaltavern/issues">Request Feature</a>
@@ -76,9 +72,16 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+Welcome to the magical tavern! Travelers and adventurers from far and wide gather here to discuss their next adventure or simply just meet over a good ol' pint of beer.
 
-Here's a blank template to get started: To avoid retyping too much info. Do a search and replace with your text editor for the following: `github_username`, `repo_name`, `twitter_handle`, `linkedin_username`, `email_client`, `email`, `project_title`, `project_description`
+### Okay so... what is this *really*?
+magicaltavern is a Discord Bot written in python that aims to organise D&D/PnP Discord Servers by providing handy tools.
+These tools include:
+<br />
+- Commands to find players for a PnP campaign
+- A database integration to store interested members and automatically create a server cateory and roles for them to 
+talk in
+- Cool things
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -86,14 +89,8 @@ Here's a blank template to get started: To avoid retyping too much info. Do a se
 
 ### Built With
 
-* [Next.js](https://nextjs.org/)
-* [React.js](https://reactjs.org/)
-* [Vue.js](https://vuejs.org/)
-* [Angular](https://angular.io/)
-* [Svelte](https://svelte.dev/)
-* [Laravel](https://laravel.com)
-* [Bootstrap](https://getbootstrap.com)
-* [JQuery](https://jquery.com)
+* [py-cord](https://docs.pycord.dev/en/master/)
+* [sqlite3](https://www.sqlite.org/index.html)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -102,32 +99,46 @@ Here's a blank template to get started: To avoid retyping too much info. Do a se
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
+Here are some instructions to self-host the bot. The bot currently has no public instances and does not support public
+instances either.
 
 ### Prerequisites
 
 This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
+* [python 3.9](https://www.python.org/downloads/)
+* pip
+* ```sh
+  python -m ensurepip --upgrade
   ```
+  
 
 ### Installation
 
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
+1. Clone the repo
    ```sh
-   git clone https://github.com/github_username/repo_name.git
+   git clone https://github.com/bitfl0wer/magicaltavern.git
    ```
-3. Install NPM packages
+2. (Optional) Create and activate a venv in the project directory
+    <br/>
+Linux and macOS:
+    ```sh
+   python -m venv venv
+   source ./venv/bin/activate
+   ```
+3. Install pip requirements
    ```sh
-   npm install
+   pip install -r requirements.txt
    ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
+4. Enter your bot token in `config/token.txt`
    ```
+   OTD4ODM4XhA0rDMzNDfXX44NTg1/kasjDFG_93ajksdhjk.ahjk1olnmqFAafdzfdsyui
+   ```
+5. Start the bot.
+<br/>
+From the project source (magicaltavern/) type:
+    ```sh
+    python -m src.bot
+    ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -136,9 +147,9 @@ This is an example of how to list things you need to use the software and how to
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
+Not done yet. WIP!
+<br/>
+_For more examples, please refer to the [Documentation](https://www.youtube.com/watch?v=dQw4w9WgXcQ)_
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -147,12 +158,7 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 <!-- ROADMAP -->
 ## Roadmap
 
-- [ ] Feature 1
-- [ ] Feature 2
-- [ ] Feature 3
-    - [ ] Nested Feature
-
-See the [open issues](https://github.com/github_username/repo_name/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/bitfl0wer/magicaltavern/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -179,7 +185,7 @@ Don't forget to give the project a star! Thanks again!
 <!-- LICENSE -->
 ## License
 
-Distributed under the MIT License. See `LICENSE.txt` for more information.
+Distributed under the GPL-3.0 License.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -188,9 +194,9 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email@email_client.com
+Flori - [@starflowerflori](https://twitter.com/starflowerflori) - florian@proweber.de
 
-Project Link: [https://github.com/github_username/repo_name](https://github.com/github_username/repo_name)
+Project Link: [https://github.com/bitfl0wer/magicaltavern](https://github.com/bitfl0wer/magicaltavern)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -199,9 +205,8 @@ Project Link: [https://github.com/github_username/repo_name](https://github.com/
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-* []()
-* []()
-* []()
+* Yama for helping me figure out sqlite stuff! <3
+
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -209,16 +214,16 @@ Project Link: [https://github.com/github_username/repo_name](https://github.com/
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/github_username/repo_name.svg?style=for-the-badge
-[contributors-url]: https://github.com/github_username/repo_name/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/github_username/repo_name.svg?style=for-the-badge
-[forks-url]: https://github.com/github_username/repo_name/network/members
-[stars-shield]: https://img.shields.io/github/stars/github_username/repo_name.svg?style=for-the-badge
-[stars-url]: https://github.com/github_username/repo_name/stargazers
-[issues-shield]: https://img.shields.io/github/issues/github_username/repo_name.svg?style=for-the-badge
-[issues-url]: https://github.com/github_username/repo_name/issues
-[license-shield]: https://img.shields.io/github/license/github_username/repo_name.svg?style=for-the-badge
-[license-url]: https://github.com/github_username/repo_name/blob/master/LICENSE.txt
+[contributors-shield]: https://img.shields.io/github/contributors/bitfl0wer/magicaltavern.svg?style=for-the-badge
+[contributors-url]: https://github.com/bitfl0wer/magicaltavern/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/bitfl0wer/magicaltavern.svg?style=for-the-badge
+[forks-url]: https://github.com/bitfl0wer/magicaltavern/network/members
+[stars-shield]: https://img.shields.io/github/stars/bitfl0wer/magicaltavern.svg?style=for-the-badge
+[stars-url]: https://github.com/bitfl0wer/magicaltavern/stargazers
+[issues-shield]: https://img.shields.io/github/issues/bitfl0wer/magicaltavern.svg?style=for-the-badge
+[issues-url]: https://github.com/bitfl0wer/magicaltavern/issues
+[license-shield]: https://img.shields.io/github/license/bitfl0wer/magicaltavern.svg?style=for-the-badge
+[license-url]: https://github.com/bitfl0wer/magicaltavern/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/linkedin_username
 [product-screenshot]: images/screenshot.png
