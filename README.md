@@ -203,7 +203,7 @@ Project Link: [https://github.com/bitfl0wer/magicaltavern](https://github.com/bi
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-* Yama for helping me figure out sqlite stuff! <3
+* [Yama](https://github.com/OParczyk) for helping me figure out sqlite stuff! <3
 
 
 <p align="right">(<a href="#top">back to top</a>)</p>
