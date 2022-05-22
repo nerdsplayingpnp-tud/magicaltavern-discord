@@ -1,10 +1,8 @@
-"""
-    I am not writing any more import-docstrings. these are pointless.
-    """
 from pathlib import Path
 import json
 
 # get_project_root() returns the root directory of the project as a Path-object.
+import discord
 
 
 def get_project_root():
@@ -58,3 +56,17 @@ def roles_var(json_key: str) -> int:
     with open(from_project_root('/config/roles.json'), encoding='utf-8') as role:
         __role_dict__ = json.load(role)
         return int(__role_dict__[json_key])
+
+
+def user_has_role_id(ctx: discord.Interaction, role_id: int) -> bool:
+    """
+    Method that checks if a user from a command interaction has a specific role. Returns True if the
+    user has the specified role id.
+    @param ctx: Discord Interaction Context
+    @param role_id: The role id to check.
+    """
+    role_check = False
+    for i in ctx.user.roles:
+        if roles_var('role-dm') == i.id:
+            role_check = True
+    return role_check
