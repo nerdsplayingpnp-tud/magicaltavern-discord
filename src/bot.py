@@ -11,8 +11,8 @@
         Used for: please see helper_functions.py docstrings for an explanation.
     """
 import discord
-from logger.ownlogger import log
-from helper_functions import from_project_root, config_var
+from src.logger.ownlogger import log
+from src.helper_functions import from_project_root, config_var
 from src.sqlite.database_initialiser import db_init
 
 db_init()  # Ensure the database tables exist
