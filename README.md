@@ -185,7 +185,7 @@ Don't forget to give the project a star! Thanks again!
 <!-- LICENSE -->
 ## License
 
-Distributed under the GPL-3.0 License.
+Distributed under the AGPL-3.0 License.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
