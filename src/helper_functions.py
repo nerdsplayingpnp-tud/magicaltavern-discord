@@ -45,7 +45,7 @@ def config_var(json_key: str):
         return __conf_dict__[json_key]
 
 
-def roles_var(json_key: str) -> int:
+def roles_var(json_key: str):
     """roles_var is used to easily retrieve key/values from roles.json without having to do the
     full 'with open...' dance everytime.
     Args:
@@ -55,18 +55,34 @@ def roles_var(json_key: str) -> int:
     """
     with open(from_project_root('/config/roles.json'), encoding='utf-8') as role:
         __role_dict__ = json.load(role)
-        return int(__role_dict__[json_key])
+        return __role_dict__[json_key]
 
 
-def user_has_role_id(ctx: discord.Interaction, role_id: int) -> bool:
+def user_has_role_id(ctx: discord.Interaction, role_id: int) -> bool:  #TODO: Rename this or re-implement this. The name
+    # TODO: of the function is misleading.
     """
     Method that checks if a user from a command interaction has a specific role. Returns True if the
     user has the specified role id.
     @param ctx: Discord Interaction Context
-    @param role_id: The role id to check.
+    @param role_id: The role id to check against.
     """
     role_check = False
     for i in ctx.user.roles:
         if roles_var('role-dm') == i.id:
             role_check = True
     return role_check
+
+
+def user_has_any_role(ctx: discord.Interaction, role_ids: [int]) -> bool:
+    """
+    Method that checks if a user from a command interaction has any of the given roles. Returns True if the user has
+    any of the specified role ids.
+    @param ctx: Discord Interaction Context
+    @param role_ids: The role ids to check against.
+    """
+    roles_check = False
+    for i in ctx.user.roles:
+        for j in role_ids:
+            if i.id == j:
+                roles_check = True
+    return roles_check

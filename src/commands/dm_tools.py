@@ -8,7 +8,7 @@ from discord.commands import (
     slash_command,
 )
 from src.sqlite.database_handler import Connection as Handler
-from src.helper_functions import get_project_root, from_project_root, config_var, roles_var, user_has_role_id
+from src.helper_functions import get_project_root, from_project_root, config_var, roles_var, user_has_role_id, user_has_any_role
 
 roles_path = os.path.join(get_project_root(), "/config/roles.json")  # why lol
 with open(from_project_root('/config/roles.json'), encoding='utf-8') as roles_json:  # also just why lmfao
@@ -26,15 +26,6 @@ class DungeonMasterTools(commands.Cog):
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-
-    def check_admin(self=None):
-        def predicate(ctx):
-            return (commands.check_any(commands.has_role(id_role_admin),
-                                       commands.has_permissions(
-                                           administrator=True),
-                                       commands.is_owner()))
-
-        return commands.check(predicate)
 
     @slash_command(
         name='suggest-campaign',
@@ -82,7 +73,7 @@ class DungeonMasterTools(commands.Cog):
                                                                   "möchtest.", required=False) = None
                                ):
 
-        if not user_has_role_id(ctx, roles_var('role-dm')):
+        if not user_has_any_role(ctx, roles_var('role-dm')):
             await ctx.response.send_message("Du siehst mir aber nicht wie ein:e Spielemeister:in aus... Ich hab' aber "
                                             "gehört dass die Leiter:innen dieser Taverne wieder anheuern! Schau mal "
                                             "drüben bei #dm-bewerbung vorbei!", ephemeral=True)
