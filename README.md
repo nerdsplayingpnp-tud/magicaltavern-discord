@@ -105,7 +105,7 @@ instances either.
 This is an example of how to list things you need to use the software and how to install them.
 * [python 3.9](https://www.python.org/downloads/)
 * pip
-* ```sh
+  ```sh
   python -m ensurepip --upgrade
   ```
   
