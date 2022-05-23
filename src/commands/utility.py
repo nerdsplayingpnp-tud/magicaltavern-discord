@@ -22,7 +22,7 @@ from discord.commands import (
 )
 import discord
 from discord.ext import commands
-from helper_functions import get_project_root, from_project_root, config_var
+from src.helper_functions import get_project_root, from_project_root, config_var
 
 
 roles_path = os.path.join(get_project_root(), "/config/roles.json")
