@@ -33,8 +33,8 @@ try:
         __token__ = token_file.read()
 
         # Load all the cogs
-        bot.load_extension("commands.utility")
-        bot.load_extension("commands.dm_tools")
+        bot.load_extension("src.commands.utility")
+        bot.load_extension("src.commands.dm_tools")
         # Connect the bot to the discord api
         bot.run(__token__)
 except FileNotFoundError:
