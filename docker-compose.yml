@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  bot:
+    build: .
+    restart: unless-stopped
+    volumes:
+    - data:/app/data
+    - ./config:/app/config
+
+volumes:
+  data:
