@@ -127,17 +127,13 @@ Linux and macOS:
    ```sh
    pip install -r requirements.txt
    ```
-4. Enter your bot token in `config/token.txt`
-   ```
-   OTD4ODM4XhA0rDMzNDfXX44NTg1/kasjDFG_93ajksdhjk.ahjk1olnmqFAafdzfdsyui
-   ```
-5. Modify the files in the `/config` directory to fit your needs. In `config/config.json`, set the `guilds` attribute to
+4. Modify the files in the `/config` directory to fit your needs. In `config/config.json`, set the `guilds` attribute to
 the id(s) of the guilds you want the bot to operate in. Also, do not forget to create a role for dungeon masters on your
 server. Copy the ID of that role into `config/roles.json` as the `role-dm` attribute. Do the same thing for the admin
 role, and finally, put the user ID of the person that is supposed to be the bots' owner under `id-owner`.
-6. Start the bot. From the project source (magicaltavern/) type
+5. Start the bot. From the project source (magicaltavern/) type
     ```sh
-    python -m src.bot
+    TOKEN=YOURBOTTOKENHERE python -m src.bot
     ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
