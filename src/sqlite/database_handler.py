@@ -1,3 +1,4 @@
+import os
 import sqlite3
 from src.helper_functions import from_project_root
 from src.logger.ownlogger import log
@@ -23,6 +24,7 @@ class Connection(metaclass=ConnectionMeta):
         """
         conn = None
         try:
+            os.makedirs(from_project_root('/data'), exist_ok=True)
             conn = sqlite3.connect(from_project_root('/data/campaign.db'))
             return conn
         except sqlite3.OperationalError as e:
