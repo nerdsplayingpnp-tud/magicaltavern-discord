@@ -13,9 +13,7 @@
 import discord
 from os import environ
 from dotenv import load_dotenv
-from src.logger.ownlogger import log
 from src.helper_functions import from_project_root, config_var
-from src.sqlite.database_initialiser import db_init
 
 
 load_dotenv()
@@ -25,7 +23,6 @@ if "TOKEN" not in environ:
 
 __token__ = environ.get("TOKEN")
 
-db_init()  # Ensure the database tables exist
 bot = discord.Bot()
 
 
