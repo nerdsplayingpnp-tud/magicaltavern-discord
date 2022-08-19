@@ -1,11 +1,12 @@
 from pathlib import Path
-import json
+import json, deprecated
 from typing import List
 
 # get_project_root() returns the root directory of the project as a Path-object.
 import discord
 
 
+@deprecated(reason="This function is stupid. Use pathlib and Path instead.")
 def get_project_root():
     """Used to get the project folder path on any given harddrive. We do this to ensure that
     filepaths are always relative, which means that this bot should be able to run anywhere.
@@ -16,6 +17,7 @@ def get_project_root():
     return Path(__file__).parent.parent
 
 
+@deprecated(reason="This function is stupid. Use pathlib and Path instead.")
 def from_project_root(path: str) -> str:
     """from_project_root(path) is supposed to be a simple way to navigate directories relative to
     the project root. Example: If your project root is '/home/user/this-project', calling
