@@ -156,8 +156,10 @@ class DungeonMasterTools(commands.Cog):
         }
 
         apikey = api_var("token")
+        api_url = config_var("api-url")
+        api_port = config_var("api-port")
         response_key = requests.post(
-            f"http://localhost:7777/api/v1.0/campaigns/?apikey={apikey}",
+            f"{api_url}:{api_port}/api/v1.0/campaigns/?apikey={apikey}",
             json=data_dict,
         )
 
