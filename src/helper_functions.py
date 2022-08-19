@@ -1,5 +1,6 @@
 from pathlib import Path
 import json
+from typing import List
 
 # get_project_root() returns the root directory of the project as a Path-object.
 import discord
@@ -40,7 +41,22 @@ def config_var(json_key: str):
     Returns:
         any type: the value
     """
-    with open(from_project_root('/config/config.json'), encoding='utf-8') as conf:
+    with open(from_project_root("/config/config.json"), encoding="utf-8") as conf:
+        __conf_dict__ = json.load(conf)
+        return __conf_dict__[json_key]
+
+
+def api_var(json_key: str):
+    """api_var is used to easily retrieve key/values from apikey.json without having to do the
+    full 'with open...' dance everytime.
+
+    Args:
+        json_key (str): the key which you want to retrieve the value from.
+
+    Returns:
+        any type: the value
+    """
+    with open(from_project_root("/config/apikey.json"), encoding="utf-8") as conf:
         __conf_dict__ = json.load(conf)
         return __conf_dict__[json_key]
 
@@ -53,12 +69,14 @@ def roles_var(json_key: str):
     Returns:
         int: the id
     """
-    with open(from_project_root('/config/roles.json'), encoding='utf-8') as role:
+    with open(from_project_root("/config/roles.json"), encoding="utf-8") as role:
         __role_dict__ = json.load(role)
         return __role_dict__[json_key]
 
 
-def user_has_role_id(ctx: discord.Interaction, role_id: int) -> bool:  #TODO: Rename this or re-implement this. The name
+def user_has_role_id(
+    ctx: discord.Interaction, role_id: int
+) -> bool:  # TODO: Rename this or re-implement this. The name
     # TODO: of the function is misleading.
     """
     Method that checks if a user from a command interaction has a specific role. Returns True if the
@@ -68,12 +86,12 @@ def user_has_role_id(ctx: discord.Interaction, role_id: int) -> bool:  #TODO: Re
     """
     role_check = False
     for i in ctx.user.roles:
-        if roles_var('role-dm') == i.id:
+        if roles_var("role-dm") == i.id:
             role_check = True
     return role_check
 
 
-def user_has_any_role(ctx: discord.Interaction, role_ids: [int]) -> bool:
+def user_has_any_role(ctx: discord.Interaction, role_ids: List[int]) -> bool:
     """
     Method that checks if a user from a command interaction has any of the given roles. Returns True if the user has
     any of the specified role ids.
