@@ -13,8 +13,6 @@
 import discord
 from os import environ
 from dotenv import load_dotenv
-from src.logger.ownlogger import log
-from src.helper_functions import from_project_root, config_var
 
 load_dotenv()
 
