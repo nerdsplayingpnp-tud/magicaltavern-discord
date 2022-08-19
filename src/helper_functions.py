@@ -1,11 +1,12 @@
 from pathlib import Path
-import json
+import json, deprecated
 from typing import List
 
 # get_project_root() returns the root directory of the project as a Path-object.
 import discord
 
 
+@deprecated(reason="This function is stupid. Use pathlib and Path instead.")
 def get_project_root():
     """Used to get the project folder path on any given harddrive. We do this to ensure that
     filepaths are always relative, which means that this bot should be able to run anywhere.
@@ -16,6 +17,7 @@ def get_project_root():
     return Path(__file__).parent.parent
 
 
+@deprecated(reason="This function is stupid. Use pathlib and Path instead.")
 def from_project_root(path: str) -> str:
     """from_project_root(path) is supposed to be a simple way to navigate directories relative to
     the project root. Example: If your project root is '/home/user/this-project', calling
@@ -31,47 +33,10 @@ def from_project_root(path: str) -> str:
     return str(str(get_project_root()) + path)
 
 
-def config_var(json_key: str):
-    """config_var is used to easily retrieve key/values from config.json without having to do the
-    full 'with open...' dance everytime.
-
-    Args:
-        json_key (str): the key which you want to retrieve the value from.
-
-    Returns:
-        any type: the value
-    """
-    with open(from_project_root("/config/config.json"), encoding="utf-8") as conf:
+def get_var(file: Path, key: str):
+    with open(file, encoding="utf-8") as conf:
         __conf_dict__ = json.load(conf)
-        return __conf_dict__[json_key]
-
-
-def api_var(json_key: str):
-    """api_var is used to easily retrieve key/values from apikey.json without having to do the
-    full 'with open...' dance everytime.
-
-    Args:
-        json_key (str): the key which you want to retrieve the value from.
-
-    Returns:
-        any type: the value
-    """
-    with open(from_project_root("/config/apikey.json"), encoding="utf-8") as conf:
-        __conf_dict__ = json.load(conf)
-        return __conf_dict__[json_key]
-
-
-def roles_var(json_key: str):
-    """roles_var is used to easily retrieve key/values from roles.json without having to do the
-    full 'with open...' dance everytime.
-    Args:
-        json_key (str): the key which you want to retrieve the value from.
-    Returns:
-        int: the id
-    """
-    with open(from_project_root("/config/roles.json"), encoding="utf-8") as role:
-        __role_dict__ = json.load(role)
-        return __role_dict__[json_key]
+        return __conf_dict__[key]
 
 
 def user_has_role_id(
@@ -86,7 +51,7 @@ def user_has_role_id(
     """
     role_check = False
     for i in ctx.user.roles:
-        if roles_var("role-dm") == i.id:
+        if get_var("config/roles.json", "role-dm") == i.id:
             role_check = True
     return role_check
 

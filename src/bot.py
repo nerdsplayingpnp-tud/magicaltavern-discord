@@ -1,20 +1,6 @@
-"""
-    IMPORTS:
-
-    discord, discord.ext
-        Used for: Literally everything discord-api related.
-
-    logger.ownlogger: log
-        Used for: logging, duh.
-
-    helper_functions
-        Used for: please see helper_functions.py docstrings for an explanation.
-    """
 import discord
 from os import environ
 from dotenv import load_dotenv
-from src.logger.ownlogger import log
-from src.helper_functions import from_project_root, config_var
 
 load_dotenv()
 

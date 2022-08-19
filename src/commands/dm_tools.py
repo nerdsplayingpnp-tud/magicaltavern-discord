@@ -1,39 +1,22 @@
-import os, json, datetime, discord, requests
+import discord, requests
 from discord.commands import Option
 from discord.ext import commands
 from discord.commands import (
     slash_command,
 )
-from src.helper_functions import (
-    api_var,
-    get_project_root,
-    from_project_root,
-    config_var,
-    roles_var,
-    api_var,
-    user_has_role_id,
-    user_has_any_role,
-)
+from src.helper_functions import get_var, user_has_any_role
 
-roles_path = os.path.join(get_project_root(), "/config/roles.json")  # why lol
-with open(
-    from_project_root("/config/roles.json"), encoding="utf-8"
-) as roles_json:  # also just why lmfao
-    __roles_dict__ = json.load(roles_json)
-    id_role_admin = __roles_dict__["role-admin"]
-list_guilds = config_var("guilds")
+list_guilds = get_var("config/config.json", "guilds")
+id_role_admin = get_var("config/roles.json", "role-admin")
 
 
 class DungeonMasterTools(commands.Cog):
-    """
-    TODO: Add Description
-    """
-
-    # Some utility commands.
-
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
+    # This is the slash command to suggest a campaign. It is really long, because it has a lot of
+    # arguments. These arguments then get POSTed into the magicaltavern-api to store the campaign,
+    # and then sent as an embed.
     @slash_command(
         name="suggest-campaign",
         guild_ids=list_guilds,
@@ -127,7 +110,8 @@ class DungeonMasterTools(commands.Cog):
         ) = None,
     ):
 
-        if not user_has_any_role(ctx, roles_var("role-dm")):
+        # Abort if the user that issued the command is not a dungeon master
+        if not user_has_any_role(ctx, get_var("config/roles.json", "role-dm")):
             await ctx.response.send_message(
                 "Du siehst mir aber nicht wie ein:e Spielemeister:in aus... Ich hab' aber "
                 "gehört dass die Leiter:innen dieser Taverne wieder anheuern! Schau mal "
@@ -155,13 +139,16 @@ class DungeonMasterTools(commands.Cog):
             "image_url": image_url,
         }
 
-        apikey = api_var("token")
-        api_url = config_var("api-url")
-        api_port = config_var("api-port")
+        apikey = get_var("config/apikey.json", "token")
+        api_url = get_var("config/config.json", "api-url")
+        api_port = get_var("config/config.json", "api-port")
         response_key = requests.post(
             f"{api_url}:{api_port}/api/v1.0/campaigns/?apikey={apikey}",
             json=data_dict,
         )
+
+        ### Embed Creation and sending ###
+        # The code here is absolutely mindless.
 
         color = discord.Colour.random()
         embed = discord.Embed(
@@ -190,8 +177,9 @@ class DungeonMasterTools(commands.Cog):
         embed.set_author(name=ctx.user.name)
         if image_url is not None:
             embed.set_image(url=image_url)
-        # TODO: Change this
         await ctx.response.send_message(embed=embed)
+
+        ### End of Embed Creation and sending ###
 
 
 def setup(bot: discord.Bot):
