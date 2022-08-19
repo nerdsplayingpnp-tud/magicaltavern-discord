@@ -89,6 +89,7 @@ talk in
 
 * [py-cord](https://docs.pycord.dev/en/master/)
 * [sqlite3](https://www.sqlite.org/index.html)
+* [magicaltavern-api](https://www.github.com/bitfl0wer/magicaltavern-api)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -108,6 +109,7 @@ This is an example of how to list things you need to use the software and how to
   ```sh
   python -m ensurepip --upgrade
   ```
+* A running, connectable instance of magicaltavern-api with at least one valid API key present.
   
 
 ### Installation
@@ -130,7 +132,8 @@ Linux and macOS:
 4. Modify the files in the `/config` directory to fit your needs. In `config/config.json`, set the `guilds` attribute to
 the id(s) of the guilds you want the bot to operate in. Also, do not forget to create a role for dungeon masters on your
 server. Copy the ID of that role into `config/roles.json` as the `role-dm` attribute. Do the same thing for the admin
-role, and finally, put the user ID of the person that is supposed to be the bots' owner under `id-owner`.
+role, and finally, put the user ID of the person that is supposed to be the bots' owner under `id-owner`. Also, do not
+forget to create a `config/apikey.json` file, and put in your magicaltavern-api key as a key: value pair with the name "token".
 5. Start the bot. From the project source (magicaltavern/) type
     ```sh
     TOKEN=YOURBOTTOKENHERE python -m src.bot
