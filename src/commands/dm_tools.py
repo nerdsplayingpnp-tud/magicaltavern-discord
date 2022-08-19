@@ -11,15 +11,12 @@ id_role_admin = get_var("config/roles.json", "role-admin")
 
 
 class DungeonMasterTools(commands.Cog):
-    """
-    TODO: Add Description
-    """
-
-    # Some utility commands.
-
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
+    # This is the slash command to suggest a campaign. It is really long, because it has a lot of
+    # arguments. These arguments then get POSTed into the magicaltavern-api to store the campaign,
+    # and then sent as an embed.
     @slash_command(
         name="suggest-campaign",
         guild_ids=list_guilds,
@@ -113,6 +110,7 @@ class DungeonMasterTools(commands.Cog):
         ) = None,
     ):
 
+        # Abort if the user that issued the command is not a dungeon master
         if not user_has_any_role(ctx, get_var("config/roles.json", "role-dm")):
             await ctx.response.send_message(
                 "Du siehst mir aber nicht wie ein:e Spielemeister:in aus... Ich hab' aber "
@@ -149,6 +147,9 @@ class DungeonMasterTools(commands.Cog):
             json=data_dict,
         )
 
+        ### Embed Creation and sending ###
+        # The code here is absolutely mindless.
+
         color = discord.Colour.random()
         embed = discord.Embed(
             title=name, description=f"**Beschreibung:** {description}", color=color
@@ -176,8 +177,9 @@ class DungeonMasterTools(commands.Cog):
         embed.set_author(name=ctx.user.name)
         if image_url is not None:
             embed.set_image(url=image_url)
-        # TODO: Change this
         await ctx.response.send_message(embed=embed)
+
+        ### End of Embed Creation and sending ###
 
 
 def setup(bot: discord.Bot):
