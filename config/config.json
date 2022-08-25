@@ -1,6 +1,5 @@
 {
-    "guilds": [954853502767730769, 845356057261506592],
-    "version": 75,
-    "api-url": "http://localhost",
-    "api-port": "7777"
+    "guilds": [],
+    "api-url": "",
+    "api-port": ""
 }
