@@ -35,7 +35,7 @@ class PersistentView(discord.ui.View):
         self.campaign_id = self.campaign_id
         #print(self.campaign_id)
         response_bool = requests.put(
-            f"{api_url}:{api_port}/api/v1.0/campaigns/{self.campaign_id[0:6]}/?apikey={apikey}&player={player}"
+            f"{api_url}:{api_port}/api/v1.0/campaigns/{self.campaign_id[0:6]}/player/?apikey={apikey}&player={player}"
         )
         if response_bool.text == "True":
             await interaction.response.send_message(
@@ -185,7 +185,7 @@ class DungeonMasterTools(commands.Cog):
         response_key = requests.post(
             f"{api_url}:{api_port}/api/v1.0/campaigns/?apikey={apikey}",
             json=data_dict,
-        ).text.replace('"', '')
+        ).text.replace('"', '')[0:6]
 
         ### Embed Creation and sending ###
         # The code here is absolutely mindless.
@@ -218,6 +218,9 @@ class DungeonMasterTools(commands.Cog):
         if image_url is not None:
             embed.set_image(url=image_url)
         await ctx.response.send_message(embed=embed, view=PersistentView(response_key))
+        requests.put(
+            f"{api_url}:{api_port}/api/v1.0/campaigns/{response_key}/has_view/?apikey={apikey}"
+        )
 
         ### End of Embed Creation and sending ###
 
