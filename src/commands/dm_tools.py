@@ -1,3 +1,5 @@
+from socket import timeout
+from unicodedata import name
 import discord, requests
 from discord.commands import Option
 from discord.ext import commands
@@ -8,11 +10,43 @@ from src.helper_functions import get_var, user_has_any_role
 
 list_guilds = get_var("config/config.json", "guilds")
 id_role_admin = get_var("config/roles.json", "role-admin")
+class PersistentView(discord.ui.View):
+    def __init__(self, campaign_id: str):
+        super().__init__(timeout=None)
+        self.campaign_id = campaign_id
+        
 
+    # When the confirm button is pressed, set the inner value
+    # to `True` and stop the View from listening to more input.
+    # We also send the user an ephemeral message that we're confirming their choice.
+    @discord.ui.button(label="Einschreiben/Austragen", style=discord.ButtonStyle.green, custom_id=f"persistent_view:green")
+    async def confirm_callback(self, button: discord.ui.Button, interaction: discord.Interaction):
+        apikey = get_var("config/apikey.json", "token")
+        api_url = get_var("config/config.json", "api-url")
+        api_port = get_var("config/config.json", "api-port")
+        player = str(interaction.user.id)
+        response_bool = requests.put(
+            f"{api_url}:{api_port}/api/v1.0/campaigns/{self.campaign_id}?apikey={apikey}&player={player}"
+        )
+        if response_bool == True:
+            await interaction.response.send_message("Du wurdest aus der Kampagne ausgetragen!", ephemeral=True)
+            return
+        else:
+            await interaction.response.send_message("Du bist in die Kampagne eingeschrieben!", ephemeral=True)
 
 class DungeonMasterTools(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+
+    @slash_command(
+        name="buttom",
+        guild_ids=list_guilds,
+    )
+    async def buttom(self, ctx: discord.Interaction):
+        """Asks the user a question to confirm something."""
+        # We create the View and assign it to a variable so that we can wait for it later.
+        await ctx.response.send_message("Do you want to continue?")
+
 
     # This is the slash command to suggest a campaign. It is really long, because it has a lot of
     # arguments. These arguments then get POSTed into the magicaltavern-api to store the campaign,
@@ -146,6 +180,7 @@ class DungeonMasterTools(commands.Cog):
             f"{api_url}:{api_port}/api/v1.0/campaigns/?apikey={apikey}",
             json=data_dict,
         )
+        print("Response: " + str(response_key))
 
         ### Embed Creation and sending ###
         # The code here is absolutely mindless.
@@ -177,7 +212,7 @@ class DungeonMasterTools(commands.Cog):
         embed.set_author(name=ctx.user.name)
         if image_url is not None:
             embed.set_image(url=image_url)
-        await ctx.response.send_message(embed=embed)
+        await ctx.response.send_message(embed=embed, view=PersistentView(response_key))
 
         ### End of Embed Creation and sending ###
 
