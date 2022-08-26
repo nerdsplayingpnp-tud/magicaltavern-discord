@@ -13,9 +13,8 @@ id_role_admin = get_var("config/roles.json", "role-admin")
 
 
 class PersistentView(discord.ui.View):
-    def __init__(self, campaign_id: str):
+    def __init__(self):
         super().__init__(timeout=None)
-        self.campaign_id = campaign_id
 
     # When the confirm button is pressed, set the inner value
     # to `True` and stop the View from listening to more input.
@@ -28,14 +27,14 @@ class PersistentView(discord.ui.View):
     async def confirm_callback(
         self, button: discord.ui.Button, interaction: discord.Interaction
     ):
+        message_id = interaction.message.id
         apikey = get_var("config/apikey.json", "token")
         api_url = get_var("config/config.json", "api-url")
         api_port = get_var("config/config.json", "api-port")
         player = str(interaction.user.id)
-        self.campaign_id = self.campaign_id
-        #print(self.campaign_id)
+        get_db_key = requests.get(f"{api_url}:{api_port}/api/v1.0/message_keys/{message_id}").text[1:7]
         response_bool = requests.put(
-            f"{api_url}:{api_port}/api/v1.0/campaigns/{self.campaign_id[0:6]}/player/?apikey={apikey}&player={player}"
+            f"{api_url}:{api_port}/api/v1.0/campaigns/{get_db_key}/player/?apikey={apikey}&player={player}"
         )
         if response_bool.text == "True":
             await interaction.response.send_message(
@@ -217,10 +216,14 @@ class DungeonMasterTools(commands.Cog):
         embed.set_author(name=ctx.user.name)
         if image_url is not None:
             embed.set_image(url=image_url)
-        await ctx.response.send_message(embed=embed, view=PersistentView(response_key))
+        msg = await ctx.send(embed=embed, view=PersistentView())
+        msg_id = msg.id
+        await ctx.response.send_message("✅ Die Kampagne wurde im System angelegt und erfolgreich gesendet.", ephemeral=True)
         requests.put(
             f"{api_url}:{api_port}/api/v1.0/campaigns/{response_key}/has_view/?apikey={apikey}"
         )
+
+        requests.post(f"{api_url}:{api_port}/api/v1.0/message_keys/?apikey={apikey}&messageid={msg_id}&db_key={response_key}")
 
         ### End of Embed Creation and sending ###
 
