@@ -35,14 +35,14 @@ class PersistentView(discord.ui.View):
         self.campaign_id = self.campaign_id
         print(self.campaign_id)
         response_bool = requests.put(
-            f"{api_url}:{api_port}/api/v1.0/campaigns/{self.campaign_id}/?apikey={apikey}&player={player}"
+            f"{api_url}:{api_port}/api/v1.0/campaigns/{self.campaign_id[0:6]}/?apikey={apikey}&player={player}"
         )
-        if response_bool == "True":
+        if response_bool.text == "True":
             await interaction.response.send_message(
                 "Du wurdest aus der Kampagne ausgetragen!", ephemeral=True
             )
             return
-        elif response_bool == "False":
+        elif response_bool.text == "False":
             await interaction.response.send_message(
                 "Du bist in die Kampagne eingeschrieben!", ephemeral=True
             )
