@@ -33,7 +33,7 @@ class PersistentView(discord.ui.View):
         api_port = get_var("config/config.json", "api-port")
         player = str(interaction.user.id)
         self.campaign_id = self.campaign_id
-        print(self.campaign_id)
+        #print(self.campaign_id)
         response_bool = requests.put(
             f"{api_url}:{api_port}/api/v1.0/campaigns/{self.campaign_id[0:6]}/?apikey={apikey}&player={player}"
         )
