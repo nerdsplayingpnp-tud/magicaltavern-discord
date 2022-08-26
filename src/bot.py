@@ -13,6 +13,8 @@
 import discord
 from os import environ
 from dotenv import load_dotenv
+from discord.ext import commands
+from src.commands.dm_tools import PersistentView
 
 load_dotenv()
 
@@ -21,13 +23,29 @@ if "TOKEN" not in environ:
 
 __token__ = environ.get("TOKEN")
 
-bot = discord.Bot()
+class PersistentViewBot(commands.Bot):
+    def __init__(self):
+        intents = discord.Intents.default()
+        intents.message_content = True
+        super().__init__(command_prefix=commands.when_mentioned_or("!"), intents=intents)
+        self.persistent_views_added = False
+    
+    async def on_ready(self):
+        if not self.persistent_views_added:
+                # Register the persistent view for listening here.
+                # Note that this does not send the view to any message.
+                # In order to do this you need to first send a message with the View, which is shown below.
+                # If you have the message_id you can also pass it as a keyword argument,
+                # but for this example we don't have one.
+                self.add_view(PersistentView()) # TODO: Can we somehow load all persistent views?
+                self.persistent_views_added = True
+                
+        print(f"Logged in as {self.user} (ID: {self.user.id})")
+        print("------")
+        await bot.change_presence(activity=discord.Game("Die Taverne hat geöffnet!"))
 
+bot = PersistentViewBot()
 
-@bot.event
-async def on_ready():
-    """Gets executed once the bot is logged in."""
-    await bot.change_presence(activity=discord.Game("Die Taverne hat geöffnet!"))
 
 
 # Load all the cogs

@@ -1,3 +1,4 @@
+from urllib import response
 import discord, requests
 from discord.commands import Option
 from discord.ext import commands
@@ -5,9 +6,45 @@ from discord.commands import (
     slash_command,
 )
 from src.helper_functions import get_var, user_has_any_role
+import json
 
 list_guilds = get_var("config/config.json", "guilds")
 id_role_admin = get_var("config/roles.json", "role-admin")
+
+
+class PersistentView(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=None)
+
+    # When the confirm button is pressed, set the inner value
+    # to `True` and stop the View from listening to more input.
+    # We also send the user an ephemeral message that we're confirming their choice.
+    @discord.ui.button(
+        label="Einschreiben/Austragen",
+        style=discord.ButtonStyle.green,
+        custom_id=f"persistent_view:campaigns",
+    )
+    async def confirm_callback(
+        self, button: discord.ui.Button, interaction: discord.Interaction
+    ):
+        message_id = interaction.message.id
+        apikey = get_var("config/apikey.json", "token")
+        api_url = get_var("config/config.json", "api-url")
+        api_port = get_var("config/config.json", "api-port")
+        player = str(interaction.user.id)
+        get_db_key = requests.get(f"{api_url}:{api_port}/api/v1.0/message_keys/{message_id}").text[1:7]
+        response_bool = requests.put(
+            f"{api_url}:{api_port}/api/v1.0/campaigns/{get_db_key}/player/?apikey={apikey}&player={player}"
+        )
+        if response_bool.text == "True":
+            await interaction.response.send_message(
+                "Du wurdest aus der Kampagne ausgetragen!", ephemeral=True
+            )
+            return
+        elif response_bool.text == "False":
+            await interaction.response.send_message(
+                "Du bist in die Kampagne eingeschrieben!", ephemeral=True
+            )
 
 
 class DungeonMasterTools(commands.Cog):
@@ -17,6 +54,7 @@ class DungeonMasterTools(commands.Cog):
     # This is the slash command to suggest a campaign. It is really long, because it has a lot of
     # arguments. These arguments then get POSTed into the magicaltavern-api to store the campaign,
     # and then sent as an embed.
+    
     @slash_command(
         name="suggest-campaign",
         guild_ids=list_guilds,
@@ -80,6 +118,7 @@ class DungeonMasterTools(commands.Cog):
             "Kampagne?",
         ),
         language: Option(
+
             str,
             name="sprache",
             description="In welchen Sprachen wird dein " "Abenteuer angeboten?",
@@ -145,7 +184,7 @@ class DungeonMasterTools(commands.Cog):
         response_key = requests.post(
             f"{api_url}:{api_port}/api/v1.0/campaigns/?apikey={apikey}",
             json=data_dict,
-        )
+        ).text.replace('"', '')[0:6]
 
         ### Embed Creation and sending ###
         # The code here is absolutely mindless.
@@ -177,7 +216,14 @@ class DungeonMasterTools(commands.Cog):
         embed.set_author(name=ctx.user.name)
         if image_url is not None:
             embed.set_image(url=image_url)
-        await ctx.response.send_message(embed=embed)
+        msg = await ctx.send(embed=embed, view=PersistentView())
+        msg_id = msg.id
+        await ctx.response.send_message("✅ Die Kampagne wurde im System angelegt und erfolgreich gesendet.", ephemeral=True)
+        requests.put(
+            f"{api_url}:{api_port}/api/v1.0/campaigns/{response_key}/has_view/?apikey={apikey}"
+        )
+
+        requests.post(f"{api_url}:{api_port}/api/v1.0/message_keys/?apikey={apikey}&messageid={msg_id}&db_key={response_key}")
 
         ### End of Embed Creation and sending ###
 
