@@ -237,6 +237,42 @@ class DungeonMasterTools(commands.Cog):
 
         ### End of Embed Creation and sending ###
 
+    @slash_command(
+        name="my-campaigns",
+        guild_ids=list_guilds,
+    )
+    async def my_campaigns(self, ctx: discord.Interaction):
+        apikey = get_var("config/apikey.json", "token")
+        api_url = get_var("config/config.json", "api-url")
+        api_port = get_var("config/config.json", "api-port")
+        user = ctx.user.id
+        my_campaigns = json.loads(
+            requests.get(
+                f"{api_url}:{api_port}/api/v1.0/campaigns/dm/{user}/?apikey={apikey}"
+            ).content.decode("utf-8")
+        )
+        embed = discord.Embed(
+            title="Meine Kampagnen",
+            description="**Hier hast du eine Übersicht über deine Kampagnen.**",
+        )
+        for campaign in my_campaigns:
+            campaign_dict = json.loads(
+                requests.get(
+                    f"{api_url}:{api_port}/api/v1.0/campaigns/{campaign}/?apikey={apikey}"
+                ).content.decode("utf-8")
+            )
+            name = campaign_dict["name"]
+            players_min = campaign_dict["players_min"]
+            players_max = campaign_dict["players_max"]
+            player_current = campaign_dict["players_current"]
+            players = campaign_dict["players"]
+            embed.add_field(
+                name=name,
+                value=f"**Momentane anz. Spieler\*innen:** {player_current}/{players_max}\n **Minimale anz. Spieler\*innen:** {players_min}\n **Spieler\*innen**: {players}",
+                inline=False,
+            )
+        await ctx.response.send_message(embed=embed, ephemeral=True)
+
 
 def setup(bot: discord.Bot):
     """This setup function is needed by pycord to "link" the cog to the bot.
