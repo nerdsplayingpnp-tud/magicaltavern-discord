@@ -64,6 +64,7 @@ class DungeonMasterTools(commands.Cog):
     @slash_command(
         name="suggest-campaign",
         guild_ids=list_guilds,
+        description="Schlage als DM eine neue Kampagne vor.",
     )
     async def suggest_campaign(
         self,
@@ -266,9 +267,12 @@ class DungeonMasterTools(commands.Cog):
             players_max = campaign_dict["players_max"]
             player_current = campaign_dict["players_current"]
             players = campaign_dict["players"]
+            players_str = ""
+            for player in players:
+                players_str += "<@" + player + ">, "
             embed.add_field(
                 name=name,
-                value=f"**Momentane anz. Spieler\*innen:** {player_current}/{players_max}\n **Minimale anz. Spieler\*innen:** {players_min}\n **Spieler\*innen**: {players}",
+                value=f"**Momentane anz. Spieler\*innen:** {player_current}/{players_max}\n **Minimale anz. Spieler\*innen:** {players_min}\n **Spieler\*innen**: {players_str}",
                 inline=False,
             )
         await ctx.response.send_message(embed=embed, ephemeral=True)
