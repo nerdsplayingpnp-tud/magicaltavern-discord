@@ -270,6 +270,7 @@ class DungeonMasterTools(commands.Cog):
             players_str = ""
             for player in players:
                 players_str += "<@" + player + ">, "
+            players_str[:-2:]
             embed.add_field(
                 name=name,
                 value=f"**Momentane anz. Spieler\*innen:** {player_current}/{players_max}\n **Minimale anz. Spieler\*innen:** {players_min}\n **Spieler\*innen**: {players_str}",
