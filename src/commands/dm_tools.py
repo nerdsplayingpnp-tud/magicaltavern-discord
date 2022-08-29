@@ -241,6 +241,7 @@ class DungeonMasterTools(commands.Cog):
     @slash_command(
         name="my-campaigns",
         guild_ids=list_guilds,
+        description="Zeige den Status der Kampagnen an, von welchen du DM bist.",
     )
     async def my_campaigns(self, ctx: discord.Interaction):
         apikey = get_var("config/apikey.json", "token")
