@@ -1,8 +1,5 @@
 <div id="top"></div>
 
-
-
-
 <!-- PROJECT SHIELDS -->
 <!--
 *** I'm using markdown "reference style" links for readability.
@@ -15,8 +12,6 @@
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
-
-
 
 <!-- PROJECT LOGO -->
 <br />
@@ -36,8 +31,6 @@
     <a href="https://github.com/bitfl0wer/magicaltavern/issues">Request Feature</a>
   </p>
 </div>
-
-
 
 <!-- TABLE OF CONTENTS -->
 <details>
@@ -65,35 +58,31 @@
   </ol>
 </details>
 
-
-
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
 Welcome to the magical tavern! Travelers and adventurers from far and wide gather here to discuss their next adventure or simply just meet over a good ol' pint of beer.
 
 ### Okay so... what is this *really*?
+
 magicaltavern is a Discord Bot written in python that aims to organise D&D/PnP Discord Servers by providing handy tools.
 These tools include:
 <br />
+
 - Commands to find players for a PnP campaign
-- A database integration to store interested members and automatically create a server cateory and roles for them to 
+- A database integration to store interested members and automatically create a server cateory and roles for them to
 talk in
 - Cool things
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-
-
 ### Built With
 
-* [py-cord](https://docs.pycord.dev/en/master/)
-* [sqlite3](https://www.sqlite.org/index.html)
-* [magicaltavern-api](https://www.github.com/bitfl0wer/magicaltavern-api)
+- [py-cord](https://docs.pycord.dev/en/master/)
+- [sqlite3](https://www.sqlite.org/index.html)
+- [magicaltavern-api](https://www.github.com/bitfl0wer/magicaltavern-api)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
-
-
 
 <!-- GETTING STARTED -->
 ## Getting Started
@@ -104,44 +93,50 @@ instances either.
 ### Prerequisites
 
 This is an example of how to list things you need to use the software and how to install them.
-* [python 3.9](https://www.python.org/downloads/)
-* pip
+- [python 3.11](https://www.python.org/downloads/)
+- pip
+
   ```sh
   python -m ensurepip --upgrade
   ```
+
 * A running, connectable instance of magicaltavern-api with at least one valid API key present.
   
-
 ### Installation
 
 1. Clone the repo
+
    ```sh
    git clone https://github.com/bitfl0wer/magicaltavern.git
    ```
+
 2. (Optional) Create and activate a venv in the project directory
     <br/>
 Linux and macOS:
+
     ```sh
    python -m venv venv
    source ./venv/bin/activate
    ```
+
 3. Install pip requirements
+
    ```sh
    pip install -r requirements.txt
    ```
+
 4. Modify the files in the `/config` directory to fit your needs. In `config/config.json`, set the `guilds` attribute to
 the id(s) of the guilds you want the bot to operate in. Also, do not forget to create a role for dungeon masters on your
 server. Copy the ID of that role into `config/roles.json` as the `role-dm` attribute. Do the same thing for the admin
 role, and finally, put the user ID of the person that is supposed to be the bots' owner under `id-owner`. Also, do not
 forget to create a `config/apikey.json` file, and put in your magicaltavern-api key as a key: value pair with the name "token".
 5. Start the bot. From the project source (magicaltavern/) type
+
     ```sh
     TOKEN=YOURBOTTOKENHERE python -m src.bot
     ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
-
-
 
 <!-- USAGE EXAMPLES -->
 ## Usage
@@ -152,16 +147,12 @@ _For more examples, please refer to the [Documentation](https://www.youtube.com/
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-
-
 <!-- ROADMAP -->
 ## Roadmap
 
 See the [open issues](https://github.com/bitfl0wer/magicaltavern/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#top">back to top</a>)</p>
-
-
 
 <!-- CONTRIBUTING -->
 ## Contributing
@@ -179,16 +170,12 @@ Don't forget to give the project a star! Thanks again!
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-
-
 <!-- LICENSE -->
 ## License
 
 Distributed under the AGPL-3.0 License.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
-
-
 
 <!-- CONTACT -->
 ## Contact
@@ -199,17 +186,12 @@ Project Link: [https://github.com/bitfl0wer/magicaltavern](https://github.com/bi
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-
-
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-* [Yama](https://github.com/OParczyk) for helping me figure out sqlite stuff! <3
-
+- [Yama](https://github.com/OParczyk) for helping me figure out sqlite stuff! <3
 
 <p align="right">(<a href="#top">back to top</a>)</p>
-
-
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
@@ -221,8 +203,3 @@ Project Link: [https://github.com/bitfl0wer/magicaltavern](https://github.com/bi
 [stars-url]: https://github.com/bitfl0wer/magicaltavern/stargazers
 [issues-shield]: https://img.shields.io/github/issues/bitfl0wer/magicaltavern.svg?style=for-the-badge
 [issues-url]: https://github.com/bitfl0wer/magicaltavern/issues
-[license-shield]: https://img.shields.io/github/license/bitfl0wer/magicaltavern.svg?style=for-the-badge
-[license-url]: https://github.com/bitfl0wer/magicaltavern/blob/master/LICENSE.txt
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/linkedin_username
-[product-screenshot]: images/screenshot.png
