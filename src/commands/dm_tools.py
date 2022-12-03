@@ -1,4 +1,3 @@
-from urllib import response
 import discord, requests
 from discord.commands import Option
 from discord.ext import commands

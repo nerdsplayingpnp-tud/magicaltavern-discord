@@ -1,20 +1,3 @@
-# pylint: disable=R0201, R0801
-
-"""
-IMPORTS:
-os
-    Used for:
-        Filesystem access and paths
-json
-    Used for:
-        opening and parsing the files in /config
-discord.commands, discord, discord.ext
-    Used for:
-        literally everything discord-api related
-utils
-    Used for:
-        these are my own functions that i added for various reasons. see utils docs.
-    """
 import os
 import json
 from discord.commands import (

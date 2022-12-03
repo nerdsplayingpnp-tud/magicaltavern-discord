@@ -1,8 +1,6 @@
 from pathlib import Path
 import json
 from typing import List
-
-# get_project_root() returns the root directory of the project as a Path-object.
 import discord
 
 
@@ -48,8 +46,8 @@ def user_has_role_id(
     @param role_id: The role id to check against.
     """
     role_check = False
-    for i in ctx.user.roles:
-        if get_var("config/roles.json", "role-dm") == i.id:
+    for role_user in ctx.user.roles:
+        if get_var("config/roles.json", "role-dm") == role_user.id:
             role_check = True
     return role_check
 
@@ -62,8 +60,8 @@ def user_has_any_role(ctx: discord.Interaction, role_ids: List[int]) -> bool:
     @param role_ids: The role ids to check against.
     """
     roles_check = False
-    for i in ctx.user.roles:
-        for j in role_ids:
-            if i.id == j:
+    for role_user in ctx.user.roles:
+        for role_list in role_ids:
+            if role_user.id == role_list:
                 roles_check = True
     return roles_check
