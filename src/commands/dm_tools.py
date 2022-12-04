@@ -5,10 +5,14 @@ from discord.commands import (
     slash_command,
 )
 from src.helper_functions import get_var, user_has_any_role
+from requests.exceptions import JSONDecodeError
 import json
 
 list_guilds = get_var("config/config.json", "guilds")
 id_role_admin = get_var("config/roles.json", "role-admin")
+token = get_var("config/apikey.json", "token")
+api_url = get_var("config/config.json", "api-url")
+api_port = get_var("config/config.json", "api-port")
 
 
 class PersistentView(discord.ui.View):
@@ -27,41 +31,59 @@ class PersistentView(discord.ui.View):
         self, button: discord.ui.Button, interaction: discord.Interaction
     ):
         message_id = interaction.message.id
-        apikey = get_var("config/apikey.json", "token")
-        api_url = get_var("config/config.json", "api-url")
-        api_port = get_var("config/config.json", "api-port")
-        player = str(interaction.user.id)
-        get_db_key = requests.get(
-            f"{api_url}:{api_port}/api/v1.0/message_keys/{message_id}"
-        ).text[1:7]
-        response_bool = requests.put(
-            f"{api_url}:{api_port}/api/v1.0/campaigns/{get_db_key}/player/?apikey={apikey}&player={player}"
+        player_id = interaction.user.id
+        campaign_id = requests.get(
+            f"{api_url}:{api_port}/api/v2.0/campaigns/from_message_id/{message_id}",
+            headers={"token": token},
         )
-        if response_bool.status_code == 409:
-            await interaction.response.send_message(
-                "Diese Kampagne ist zur Zeit leider voll.", ephemeral=True
+        campaign = requests.get(
+            f"{api_url}:{api_port}/api/v2.0/campaigns/{campaign_id}",
+            headers={"token": token},
+        )
+
+        campaign_full = len(campaign_players) >= campaign.players_max
+
+        campaign_players = campaign.players
+        if player_id in campaign_players:
+            # Case: Player is already in the campaign.
+            requests.put(
+                f"{api_url}:{api_port}/api/v2.0/campaigns/{campaign_id}/players/remove/{player_id}",
+                headers={"token": token},
             )
-        if response_bool.text == "True":
             await interaction.response.send_message(
                 "Du wurdest aus der Kampagne ausgetragen!", ephemeral=True
             )
             return
-        elif response_bool.text == "False":
-            await interaction.response.send_message(
-                "Du bist in die Kampagne eingeschrieben!", ephemeral=True
+        else:
+            # Case: Player is not in the campaign...
+            if campaign_full:
+                # ...but the campaign is full
+                await interaction.response.send_message(
+                    "Diese Kampagne ist zur Zeit leider voll.", ephemeral=True
+                )
+                return
+            # ...and the campaign is not full
+            player_add_response = requests.put(
+                f"{api_url}:{api_port}/api/v2.0/campaigns/{campaign_id}/players/add/{player_id}",
+                headers={"token": token},
             )
+            if player_add_response.status_code == 409:
+                await interaction.response.send_message(
+                    "Du kannst dich nicht in diese Kampagne eintragen.", ephemeral=True
+                )
+                return
+            await interaction.response.send_message(
+                "Du wurdest in die Kampagne eingeschrieben!", ephemeral=True
+            )
+            return
 
 
 class DungeonMasterTools(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    # This is the slash command to suggest a campaign. It is really long, because it has a lot of
-    # arguments. These arguments then get POSTed into the magicaltavern-api to store the campaign,
-    # and then sent as an embed.
-
     @slash_command(
-        name="suggest-campaign",
+        name="create-campaign",
         guild_ids=list_guilds,
         description="Schlage als DM eine neue Kampagne vor.",
     )
@@ -117,11 +139,10 @@ class DungeonMasterTools(commands.Cog):
             name="typ",
             choices=[
                 "Oneshot (1-2 Sessions)",
-                "Kürzere Kampagne (" "3-7 Sessions)",
+                "Kürzere Kampagne (3-7 Sessions)",
                 "Längere Kampagne (7+ Sessions)",
             ],
-            description="Ist deine Kampagne eher ein Oneshot oder eine längere "
-            "Kampagne?",
+            description="Ist deine Kampagne ein Oneshot oder eine längere " "Kampagne?",
         ),
         language: Option(
             str,
@@ -144,8 +165,8 @@ class DungeonMasterTools(commands.Cog):
         ),
         notes: Option(
             str,
-            "Hier ist Platz für alles, was noch offen ist.",
-            name="notizen_und_sonstiges",
+            "Teile den Abenteurer\*innen mit, wann die Einschreibung für diese Kampagne eröffnet wird.",
+            name="einschreibung_datum_zeit",
         ),
         image_url: Option(
             str,
@@ -158,38 +179,49 @@ class DungeonMasterTools(commands.Cog):
         if not user_has_any_role(ctx, get_var("config/roles.json", "role-dm")):
             await ctx.response.send_message(
                 "Du siehst mir aber nicht wie ein:e Spielemeister:in aus... Ich hab' aber "
-                "gehört dass die Leiter:innen dieser Taverne wieder anheuern! Schau mal "
+                "gehört dass die Leiter\*innen dieser Taverne wieder anheuern! Schau mal "
                 "drüben bei #dm-bewerbung vorbei!",
                 ephemeral=True,
             )
             return
 
+        type_to_dict = {
+            "Oneshot (1-2 Sessions)": 0,
+            "Kürzere Kampagne (3-7 Sessions)": 1,
+            "Längere Kampagne (7+ Sessions)": 2,
+        }
+
+        complexity_to_dict = {
+            "Einsteigerfreundlich": 0,
+            "Fortgeschritten": 1,
+            "Sehr fortgeschritten": 2,
+        }
+
+        language_to_dict = {"Englisch": 0, "Deutsch": 1, "Englisch & Deutsch": 2}
+
         data_dict = {
             "name": name,
-            "dungeon_master": ctx.user.id,
             "description": description,
             "players_min": min_players,
             "players_max": max_players,
-            "complexity": complexity,
+            "complexity": complexity_to_dict[complexity],
             "place": place,
             "time": time,
             "content_warnings": content_warnings,
             "ruleset": ruleset,
-            "campaign_length": type,
-            "language": language,
+            "campaign_length": type_to_dict[type],
+            "language": language_to_dict[language],
             "character_creation": character_creation,
             "briefing": briefing,
             "notes": notes,
             "image_url": image_url,
         }
 
-        apikey = get_var("config/apikey.json", "token")
-        api_url = get_var("config/config.json", "api-url")
-        api_port = get_var("config/config.json", "api-port")
         response_key = requests.post(
-            f"{api_url}:{api_port}/api/v1.0/campaigns/?apikey={apikey}",
+            f"{api_url}:{api_port}/api/v2.0/campaigns/",
             json=data_dict,
-        ).text.replace('"', "")[0:6]
+            headers={"token": token},
+        ).json()
 
         ### Embed Creation and sending ###
         # The code here is absolutely mindless.
@@ -217,22 +249,24 @@ class DungeonMasterTools(commands.Cog):
             inline=False,
         ),
         embed.add_field(name="Briefing", value=briefing, inline=False)
-        embed.add_field(name="Weitere Bemerkungen", value=notes, inline=False)
+        embed.add_field(
+            name="Wann beginnt die Einschreibung?", value=notes, inline=False
+        )
         embed.set_author(name=ctx.user.name)
         if image_url is not None:
             embed.set_image(url=image_url)
         msg = await ctx.send(embed=embed, view=PersistentView())
-        msg_id = msg.id
         await ctx.response.send_message(
-            "✅ Die Kampagne wurde im System angelegt und erfolgreich gesendet.",
+            f"✅ Die Kampagne wurde im System angelegt. Vergiss nicht, die Einschreibung mit `/activate {response_key}` freizuschalten, wenn die Zeit gekommen ist. Wenn du die ID deiner Kampagne vergisst, kannst du diese mit `/my-campaigns` wiederfinden!",
             ephemeral=True,
         )
-        requests.put(
-            f"{api_url}:{api_port}/api/v1.0/campaigns/{response_key}/has_view/?apikey={apikey}"
-        )
-
         requests.post(
-            f"{api_url}:{api_port}/api/v1.0/message_keys/?apikey={apikey}&messageid={msg_id}&db_key={response_key}"
+            f"{api_url}:{api_port}/api/v2.0/campaigns/{response_key}/message_id/{msg.id}",
+            headers={"token": token},
+        )
+        requests.put(
+            f"{api_url}:{api_port}/api/v2.0/campaigns/{response_key}/dm/add/{ctx.user.id}",
+            headers={"token": token},
         )
 
         ### End of Embed Creation and sending ###
@@ -243,13 +277,11 @@ class DungeonMasterTools(commands.Cog):
         description="Zeige den Status der Kampagnen an, von welchen du DM bist.",
     )
     async def my_campaigns(self, ctx: discord.Interaction):
-        apikey = get_var("config/apikey.json", "token")
-        api_url = get_var("config/config.json", "api-url")
-        api_port = get_var("config/config.json", "api-port")
         user = ctx.user.id
         my_campaigns = json.loads(
             requests.get(
-                f"{api_url}:{api_port}/api/v1.0/campaigns/dm/{user}/?apikey={apikey}"
+                f"{api_url}:{api_port}/api/v2.0/users/{user}/dms_campaigns/",
+                headers={"token": token},
             ).content.decode("utf-8")
         )
         embed = discord.Embed(
@@ -257,22 +289,26 @@ class DungeonMasterTools(commands.Cog):
             description="**Hier hast du eine Übersicht über deine Kampagnen.**",
         )
         for campaign in my_campaigns:
-            campaign_dict = json.loads(
-                requests.get(
-                    f"{api_url}:{api_port}/api/v1.0/campaigns/{campaign}/?apikey={apikey}"
-                ).content.decode("utf-8")
-            )
-            name = campaign_dict["name"]
-            players_min = campaign_dict["players_min"]
-            players_max = campaign_dict["players_max"]
-            player_current = campaign_dict["players_current"]
-            players = campaign_dict["players"]
+            name = my_campaigns[campaign]["name"]
+            id = my_campaigns[campaign]["id"]
+            players_min = my_campaigns[campaign]["players_min"]
+            players_max = my_campaigns[campaign]["players_max"]
+            players = []
+            players_current = int()
+            try:
+                players = requests.get(
+                    f"{api_url}:{api_port}/api/v2.0/campaigns/{id}/players/",
+                    headers={"token": token},
+                ).json()
+                players_current = len(players)
+            except JSONDecodeError:
+                players_current = 0
             players_str = ""
             for player in players:
                 players_str += "<@" + player + ">, "
             embed.add_field(
                 name=name,
-                value=f"**Momentane anz. Spieler\*innen:** {player_current}/{players_max}\n **Minimale anz. Spieler\*innen:** {players_min}\n **Spieler\*innen**: {players_str[:-2:]}",
+                value=f"**ID:** {id}\n **Momentane anz. Spieler\*innen:** {players_current}/{players_max}\n **Minimale anz. Spieler\*innen:** {players_min}\n **Spieler\*innen**: {players_str[:-2:]}",
                 inline=False,
             )
         await ctx.response.send_message(embed=embed, ephemeral=True)
