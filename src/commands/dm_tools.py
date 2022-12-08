@@ -15,6 +15,17 @@ api_url = get_var("config/config.json", "api-url")
 api_port = get_var("config/config.json", "api-port")
 
 
+def dict_key_by_value(dictionary: dict, search: any):
+    for (
+        key,
+        value,
+    ) in (
+        dictionary.items()
+    ):  # for name, age in dictionary.iteritems():  (for Python 2.x)
+        if value == search:
+            return key
+
+
 class PersistentView(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
@@ -35,15 +46,20 @@ class PersistentView(discord.ui.View):
         campaign_id = requests.get(
             f"{api_url}:{api_port}/api/v2.0/campaigns/from_message_id/{message_id}",
             headers={"token": token},
-        )
+        ).json()
         campaign = requests.get(
             f"{api_url}:{api_port}/api/v2.0/campaigns/{campaign_id}",
             headers={"token": token},
-        )
+        ).json()
 
-        campaign_full = len(campaign_players) >= campaign.players_max
+        campaign_players = list()
+        try:
+            campaign_players = campaign["players"]
+        except KeyError:
+            campaign_players = []
 
-        campaign_players = campaign.players
+        campaign_full = len(campaign_players) >= campaign["players_max"]
+
         if player_id in campaign_players:
             # Case: Player is already in the campaign.
             requests.put(
@@ -85,9 +101,9 @@ class DungeonMasterTools(commands.Cog):
     @slash_command(
         name="create-campaign",
         guild_ids=list_guilds,
-        description="Schlage als DM eine neue Kampagne vor.",
+        description="Erstelle eine neue Kampagne.",
     )
-    async def suggest_campaign(
+    async def create_campaign(
         self,
         ctx: discord.Interaction,
         name: Option(str, "Der Name der Kampagne."),
@@ -255,7 +271,8 @@ class DungeonMasterTools(commands.Cog):
         embed.set_author(name=ctx.user.name)
         if image_url is not None:
             embed.set_image(url=image_url)
-        msg = await ctx.send(embed=embed, view=PersistentView())
+        # msg = await ctx.send(embed=embed, view=PersistentView())
+        msg = await ctx.send(embed=embed)
         await ctx.response.send_message(
             f"✅ Die Kampagne wurde im System angelegt. Vergiss nicht, die Einschreibung mit `/activate {response_key}` freizuschalten, wenn die Zeit gekommen ist. Wenn du die ID deiner Kampagne vergisst, kannst du diese mit `/my-campaigns` wiederfinden!",
             ephemeral=True,
@@ -312,6 +329,157 @@ class DungeonMasterTools(commands.Cog):
                 inline=False,
             )
         await ctx.response.send_message(embed=embed, ephemeral=True)
+
+    @slash_command(
+        name="activate",
+        guild_ids=list_guilds,
+        description="Gib eine Kampagne zur Einschreibung frei.",
+    )
+    async def activate(
+        self,
+        ctx: discord.Interaction,
+        campaign_id: Option(
+            int,
+            description="Gib die ID der Kampagne an, welche du zur Einschreibung freigeben möchtest.",
+        ),
+    ):
+        user = ctx.user.id
+        user_campaigns = requests.get(
+            f"{api_url}:{api_port}/api/v2.0/users/{user}/dms_campaigns/",
+            headers={"token": token},
+        ).json()
+
+        for campaign_iter in user_campaigns:
+            if campaign_id == user_campaigns[campaign_iter]["id"]:
+                response_activate = requests.put(
+                    f"{api_url}:{api_port}/api/v2.0/campaigns/{campaign_id}/activate",
+                    headers={"token": token},
+                )
+                if response_activate.status_code == 409:
+                    return ctx.response.send_message(
+                        "Die Kampagne ist bereits aktiv.", ephemeral=True
+                    )
+                campaign = requests.get(
+                    f"{api_url}:{api_port}/api/v2.0/campaigns/{campaign_id}",
+                    headers={"token": token},
+                ).json()
+                old_message = await ctx.fetch_message(campaign["message_id"])
+                await old_message.delete()
+
+                if not user_has_any_role(ctx, get_var("config/roles.json", "role-dm")):
+                    await ctx.response.send_message(
+                        "Du siehst mir aber nicht wie ein:e Spielemeister:in aus... Ich hab' aber "
+                        "gehört dass die Leiter\*innen dieser Taverne wieder anheuern! Schau mal "
+                        "drüben bei #dm-bewerbung vorbei!",
+                        ephemeral=True,
+                    )
+                    return
+
+                type_to_dict = {
+                    "Oneshot (1-2 Sessions)": 0,
+                    "Kürzere Kampagne (3-7 Sessions)": 1,
+                    "Längere Kampagne (7+ Sessions)": 2,
+                }
+
+                complexity_to_dict = {
+                    "Einsteigerfreundlich": 0,
+                    "Fortgeschritten": 1,
+                    "Sehr fortgeschritten": 2,
+                }
+
+                language_to_dict = {
+                    "Englisch": 0,
+                    "Deutsch": 1,
+                    "Englisch & Deutsch": 2,
+                }
+
+                data_dict = {
+                    "name": campaign["name"],
+                    "description": campaign["description"],
+                    "players_min": campaign["players_min"],
+                    "players_max": campaign["players_max"],
+                    "complexity": dict_key_by_value(
+                        complexity_to_dict, campaign["complexity"]
+                    ),
+                    "place": campaign["place"],
+                    "time": campaign["time"],
+                    "content_warnings": campaign["content_warnings"],
+                    "ruleset": campaign["ruleset"],
+                    "campaign_length": dict_key_by_value(
+                        type_to_dict, campaign["campaign_length"]
+                    ),
+                    "language": dict_key_by_value(
+                        language_to_dict, campaign["language"]
+                    ),
+                    "character_creation": campaign["character_creation"],
+                    "briefing": campaign["briefing"],
+                    "notes": campaign["notes"],
+                    "image_url": campaign["image_url"],
+                }
+
+                ### Embed Creation and sending ###
+                # The code here is absolutely mindless.
+
+                color = discord.Colour.random()
+                embed = discord.Embed(
+                    title=data_dict["name"],
+                    description="**Beschreibung:** " + data_dict["description"],
+                    color=color,
+                )
+
+                # Take all the info and send it as a fancy embed:
+                embed.add_field(
+                    name="Minimal benötigte Anzahl an Spieler:innen",
+                    value=data_dict["players_min"],
+                )
+                embed.add_field(
+                    name="Maximale Anzahl an Spieler:innen",
+                    value=data_dict["players_max"],
+                )
+                embed.add_field(name="Komplexität", value=data_dict["complexity"])
+                embed.add_field(name="Ort", value=data_dict["place"], inline=True)
+                embed.add_field(name="Zeit", value=data_dict["time"], inline=True)
+                embed.add_field(
+                    name="Contentwarnungen",
+                    value=data_dict["content_warnings"],
+                    inline=False,
+                )
+                embed.add_field(
+                    name="Verwendetes Regelwerk",
+                    value=data_dict["ruleset"],
+                    inline=True,
+                )
+                embed.add_field(
+                    name="Länge der Kampagne",
+                    value=data_dict["campaign_length"],
+                    inline=True,
+                )
+                embed.add_field(name="Sprache", value=data_dict["ruleset"], inline=True)
+                embed.add_field(
+                    name="Richtlinien zur Charaktererstellung",
+                    value=data_dict["character_creation"],
+                    inline=False,
+                ),
+                embed.add_field(
+                    name="Briefing", value=data_dict["briefing"], inline=False
+                )
+                embed.add_field(
+                    name="Wann beginnt die Einschreibung?",
+                    value=data_dict["notes"],
+                    inline=False,
+                )
+                embed.set_author(name=ctx.user.name)
+                if data_dict["image_url"] != "None":
+                    embed.set_image(url=data_dict["image_url"])
+                msg = await ctx.send(embed=embed, view=PersistentView())
+                await ctx.response.send_message(
+                    f"✅ Die Einschreibung zur Kampagne wurde aktiviert. Den aktuellen Status der Kampagne kannst du mit `/my-campaigns` einsehen.",
+                    ephemeral=True,
+                )
+                requests.post(
+                    f"{api_url}:{api_port}/api/v2.0/campaigns/{campaign_id}/message_id/{msg.id}",
+                    headers={"token": token},
+                )
 
 
 def setup(bot: discord.Bot):
