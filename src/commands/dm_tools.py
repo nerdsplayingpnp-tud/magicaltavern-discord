@@ -52,15 +52,14 @@ class PersistentView(discord.ui.View):
             headers={"token": token},
         ).json()
 
-        campaign_players = list()
-        try:
-            campaign_players = campaign["players"]
-        except KeyError:
-            campaign_players = []
+        campaign_players = requests.get(
+            f"{api_url}:{api_port}/api/v2.0/campaigns/{campaign_id}/players",
+            headers={"token": token},
+        ).json()
 
         campaign_full = len(campaign_players) >= campaign["players_max"]
 
-        if player_id in campaign_players:
+        if str(player_id) in campaign_players:
             # Case: Player is already in the campaign.
             requests.put(
                 f"{api_url}:{api_port}/api/v2.0/campaigns/{campaign_id}/players/remove/{player_id}",
@@ -314,7 +313,7 @@ class DungeonMasterTools(commands.Cog):
             players_current = int()
             try:
                 players = requests.get(
-                    f"{api_url}:{api_port}/api/v2.0/campaigns/{id}/players/",
+                    f"{api_url}:{api_port}/api/v2.0/campaigns/{id}/players",
                     headers={"token": token},
                 ).json()
                 players_current = len(players)
@@ -352,7 +351,7 @@ class DungeonMasterTools(commands.Cog):
         for campaign_iter in user_campaigns:
             if campaign_id == user_campaigns[campaign_iter]["id"]:
                 response_activate = requests.put(
-                    f"{api_url}:{api_port}/api/v2.0/campaigns/{campaign_id}/activate",
+                    f"{api_url}:{api_port}/api/v2.0/campaigns/{campaign_id}/allow_enrollement",
                     headers={"token": token},
                 )
                 if response_activate.status_code == 409:
