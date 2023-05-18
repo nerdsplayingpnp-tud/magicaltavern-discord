@@ -65,7 +65,7 @@ Welcome to the magical tavern! Travelers and adventurers from far and wide gathe
 
 ### Okay so... what is this *really*?
 
-magicaltavern is a Discord Bot written in python that aims to organise D&D/PnP Discord Servers by providing handy tools.
+magicaltavern is a Discord Bot written in Python that aims to organise D&D/PnP Discord Servers by providing handy tools.
 These tools include:
 <br />
 
