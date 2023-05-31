@@ -470,7 +470,7 @@ class DungeonMasterTools(commands.Cog):
                 embed.set_author(name=ctx.user.name)
                 if data_dict["image_url"] != "None":
                     embed.set_image(url=data_dict["image_url"])
-                msg = await ctx.send("@everyone Neue Kampagne!", embed=embed, view=PersistentView)
+                msg = await ctx.send(embed=embed, view=PersistentView)
                 await ctx.response.send_message(
                     f"✅ Die Einschreibung zur Kampagne wurde aktiviert. Den aktuellen Status der Kampagne kannst du mit `/my-campaigns` einsehen.",
                     ephemeral=True,
