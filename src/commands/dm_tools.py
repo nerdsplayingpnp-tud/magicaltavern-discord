@@ -351,7 +351,7 @@ class DungeonMasterTools(commands.Cog):
         for campaign_iter in user_campaigns:
             if campaign_id == user_campaigns[campaign_iter]["id"]:
                 response_activate = requests.put(
-                    f"{api_url}:{api_port}/api/v2.0/campaigns/{campaign_id}/allow_enrollement",
+                    f"{api_url}:{api_port}/api/v2.0/campaigns/{campaign_id}/allow_enrollment",
                     headers={"token": token},
                 )
                 if response_activate.status_code == 409:
